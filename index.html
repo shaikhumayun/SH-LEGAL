@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>LexAdvocate Pro — Complete Legal Research Suite</title>
+<title>SH Pro — Complete Legal Research Suite</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=JetBrains+Mono:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
 :root {
@@ -851,7 +851,7 @@ body {
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">
     <div class="logo-icon">⚖</div>
-    <div class="logo-text">LexAdvocate Pro</div>
+    <div class="logo-text">SH Pro</div>
   </div>
 
   <div class="nav-scroll">
@@ -891,7 +891,7 @@ body {
   </div>
 
   <div class="sidebar-bottom">
-    <div class="version-tag">LexAdvocate Pro v2.0<br>Indian Law Suite</div>
+    <div class="version-tag">SH Pro v2.0<br>Indian Law Suite</div>
   </div>
 </aside>
 
@@ -1518,7 +1518,7 @@ function saveDL(type, id) {
   showToast(`Saved: ${title.substring(0,45)}…`);
 
   // Simulate actual file download
-  const blob = new Blob([`LexAdvocate Pro — Saved Document\n${'─'.repeat(50)}\nTitle: ${title}\nType:  ${type.toUpperCase()}\nMeta:  ${meta}\nSaved: ${new Date().toLocaleString('en-IN')}\n${'─'.repeat(50)}\nAccess full text via your licensed legal database portal.\nThis file is an offline reference record.\n`], {type:'text/plain'});
+  const blob = new Blob([`SH Pro — Saved Document\n${'─'.repeat(50)}\nTitle: ${title}\nType:  ${type.toUpperCase()}\nMeta:  ${meta}\nSaved: ${new Date().toLocaleString('en-IN')}\n${'─'.repeat(50)}\nAccess full text via your licensed legal database portal.\nThis file is an offline reference record.\n`], {type:'text/plain'});
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
   a.download = title.replace(/[^\w\s]/g,'').substring(0,60).trim() + '.txt'; a.click();
   URL.revokeObjectURL(a.href);
