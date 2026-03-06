@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LexAdvocate Pro — Complete Legal Research Suite</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=JetBrains+Mono:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #0a0b0d;
+  --surface: #111318;
+  --surface2: #181c22;
+  --surface3: #1e2330;
+  --border: #2a2f3d;
+  --border2: #353c50;
+  --gold: #c9a84c;
+  --gold2: #e8c96a;
+  --gold-dim: rgba(201,168,76,0.15);
+  --gold-glow: rgba(201,168,76,0.08);
+  --crimson: #c0392b;
+  --navy: #1a4a8a;
+  --forest: #1a6e3c;
+  --amber: #9b6a00;
+  --violet: #6a1a9b;
+  --teal: #0a7a8a;
+  --rust: #9b3a00;
+  --slate-blue: #1a3a6e;
+  --text: #e8e4da;
+  --text2: #9a9585;
+  --text3: #5a5650;
+  --success: #2ecc71;
+  --danger: #e74c3c;
+  --radius: 8px;
+  --radius-lg: 14px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  --shadow-lg: 0 12px 48px rgba(0,0,0,0.6);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position: fixed; left: 0; top: 0;
+  width: 72px; height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  align-items: center;
+  z-index: 200;
+  transition: width 0.3s cubic-bezier(0.4,0,0.2,1);
+  overflow: hidden;
+}
+.sidebar:hover, .sidebar.expanded {
+  width: 260px;
+}
+.sidebar-logo {
+  width: 100%; padding: 18px 0;
+  display: flex; align-items: center; justify-content: center;
+  border-bottom: 1px solid var(--border);
+  min-height: 64px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.logo-icon {
+  font-size: 26px; flex-shrink: 0;
+  width: 72px; text-align: center;
+}
+.logo-text {
+  opacity: 0; white-space: nowrap;
+  transition: opacity 0.2s;
+  font-family: 'Playfair Display', serif;
+  font-size: 17px; font-weight: 700;
+  color: var(--gold2);
+  letter-spacing: 0.03em;
+}
+.sidebar:hover .logo-text, .sidebar.expanded .logo-text { opacity: 1; }
+
+.nav-scroll { flex: 1; width: 100%; overflow-y: auto; overflow-x: hidden; padding: 10px 0; }
+
+.nav-section-label {
+  padding: 14px 18px 4px 18px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--text3);
+  white-space: nowrap; opacity: 0;
+  transition: opacity 0.2s;
+}
+.sidebar:hover .nav-section-label, .sidebar.expanded .nav-section-label { opacity: 1; }
+
+.nav-item {
+  display: flex; align-items: center;
+  width: 100%; padding: 11px 0;
+  cursor: pointer; position: relative;
+  color: var(--text2);
+  transition: color 0.2s, background 0.2s;
+  border-left: 3px solid transparent;
+  white-space: nowrap; overflow: hidden;
+}
+.nav-item:hover { color: var(--text); background: var(--gold-glow); }
+.nav-item.active { color: var(--gold2); border-left-color: var(--gold); background: var(--gold-dim); }
+
+.nav-icon {
+  width: 72px; text-align: center;
+  font-size: 17px; flex-shrink: 0;
+  line-height: 1;
+}
+.nav-label {
+  font-size: 13px; font-weight: 500;
+  opacity: 0; transition: opacity 0.2s;
+  flex: 1;
+}
+.sidebar:hover .nav-label, .sidebar.expanded .nav-label { opacity: 1; }
+
+/* Category dots */
+.cat-dots { padding: 8px 0 4px; }
+.cat-dot {
+  display: flex; align-items: center;
+  padding: 7px 0; cursor: pointer;
+  transition: all 0.2s;
+}
+.cat-dot:hover .cat-dot-label { color: var(--text); }
+.dot-circle {
+  width: 72px; display: flex; justify-content: center; flex-shrink: 0;
+}
+.dot-circle span {
+  width: 9px; height: 9px; border-radius: 50%;
+  display: block; transition: transform 0.2s;
+}
+.cat-dot:hover .dot-circle span { transform: scale(1.5); }
+.cat-dot-label {
+  font-size: 12px; color: var(--text2);
+  opacity: 0; transition: opacity 0.2s;
+  font-weight: 500;
+}
+.sidebar:hover .cat-dot-label, .sidebar.expanded .cat-dot-label { opacity: 1; }
+
+.sidebar-bottom {
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+  width: 100%; overflow: hidden;
+}
+.version-tag {
+  text-align: center; font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; color: var(--text3);
+  opacity: 0; transition: opacity 0.2s; padding: 4px 18px;
+  white-space: nowrap;
+}
+.sidebar:hover .version-tag, .sidebar.expanded .version-tag { opacity: 1; }
+
+/* ── MAIN ── */
+.main {
+  margin-left: 72px;
+  min-height: 100vh;
+  transition: margin-left 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(10,11,13,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 28px;
+  height: 62px;
+  display: flex; align-items: center; gap: 16px;
+}
+.page-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px; font-weight: 600;
+  color: var(--text);
+  flex-shrink: 0; min-width: 160px;
+}
+.search-wrap {
+  flex: 1; max-width: 560px;
+  display: flex; align-items: center;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.search-wrap:focus-within {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px var(--gold-dim);
+}
+.search-wrap input {
+  flex: 1; padding: 11px 16px;
+  background: transparent; border: none; outline: none;
+  color: var(--text); font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+}
+.search-wrap input::placeholder { color: var(--text3); }
+.search-go {
+  padding: 11px 18px;
+  background: var(--gold); border: none;
+  color: #000; font-family: 'Outfit', sans-serif;
+  font-size: 12px; font-weight: 700;
+  cursor: pointer; letter-spacing: 0.06em;
+  text-transform: uppercase; transition: background 0.2s;
+}
+.search-go:hover { background: var(--gold2); }
+
+.topbar-actions { margin-left: auto; display: flex; gap: 10px; }
+.tb-btn {
+  padding: 8px 16px; border-radius: var(--radius);
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+  letter-spacing: 0.04em; border: none;
+  display: flex; align-items: center; gap: 6px;
+}
+.tb-btn-ai { background: linear-gradient(135deg,#7c3aed,#9333ea); color: white; }
+.tb-btn-ai:hover { background: linear-gradient(135deg,#8b44ff,#a844ff); transform: translateY(-1px); }
+.tb-btn-upload { background: var(--surface2); border: 1px solid var(--border2); color: var(--text2); }
+.tb-btn-upload:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ── PAGES ── */
+.page { display: none; padding: 32px 28px; animation: fadeUp 0.3s ease; }
+.page.active { display: block; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── SECTION TITLE ── */
+.sec-title {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 24px;
+}
+.sec-title h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px; font-weight: 700;
+  color: var(--text);
+}
+.sec-title h2 em { color: var(--gold); font-style: italic; }
+.sec-title .sec-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--text3);
+  letter-spacing: 0.2em; text-transform: uppercase;
+  margin-bottom: 2px; display: block;
+}
+.sec-actions { display: flex; gap: 10px; }
+
+/* ── STAT ROW ── */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px; margin-bottom: 32px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  position: relative; overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.stat-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+.stat-card::before {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+}
+.stat-card:nth-child(1)::before { background: var(--gold); }
+.stat-card:nth-child(2)::before { background: var(--crimson); }
+.stat-card:nth-child(3)::before { background: var(--navy); }
+.stat-card:nth-child(4)::before { background: var(--violet); }
+.stat-card:nth-child(5)::before { background: var(--success); }
+.stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px; font-weight: 900;
+  color: var(--gold2); line-height: 1;
+  margin-bottom: 6px;
+}
+.stat-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--text3);
+  letter-spacing: 0.12em; text-transform: uppercase;
+}
+
+/* ── AI PANEL ── */
+.ai-panel {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  margin-bottom: 32px;
+  position: relative; overflow: hidden;
+}
+.ai-panel::after {
+  content: '⚖';
+  position: absolute; right: 24px; top: 16px;
+  font-size: 80px; opacity: 0.04;
+  pointer-events: none;
+}
+.ai-panel-header {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 6px;
+}
+.ai-badge {
+  background: linear-gradient(135deg,#7c3aed,#9333ea);
+  color: white; padding: 3px 10px;
+  border-radius: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+.ai-panel-header h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px; font-weight: 700; color: var(--text);
+}
+.ai-panel p {
+  color: var(--text2); font-size: 14px;
+  line-height: 1.7; margin-bottom: 20px;
+}
+
+.ai-controls {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  gap: 10px;
+}
+.ai-input {
+  padding: 12px 18px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  color: var(--text); font-family: 'Outfit', sans-serif;
+  font-size: 14px; outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.ai-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px var(--gold-dim);
+}
+.ai-input::placeholder { color: var(--text3); }
+.ai-select {
+  padding: 12px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  color: var(--text2); font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; outline: none; cursor: pointer;
+  transition: border-color 0.2s;
+}
+.ai-select:focus { border-color: var(--gold); }
+.ai-cat-select {
+  padding: 12px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  color: var(--text2); font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; outline: none; cursor: pointer;
+}
+.ai-go-btn {
+  padding: 12px 24px;
+  background: linear-gradient(135deg,#7c3aed,#9333ea);
+  border: none; border-radius: var(--radius);
+  color: white; font-family: 'Outfit', sans-serif;
+  font-size: 13px; font-weight: 700;
+  cursor: pointer; letter-spacing: 0.05em;
+  transition: all 0.2s; white-space: nowrap;
+}
+.ai-go-btn:hover { background: linear-gradient(135deg,#8b44ff,#a844ff); transform: translateY(-1px); }
+.ai-go-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+/* AI Result Box */
+.ai-result-box {
+  display: none; margin-top: 20px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.ai-result-box.show { display: block; }
+.ai-result-header-bar {
+  background: linear-gradient(90deg, rgba(124,58,237,0.2), transparent);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 18px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.ai-result-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: #a78bfa;
+  letter-spacing: 0.15em; text-transform: uppercase;
+}
+.ai-result-actions { display: flex; gap: 8px; }
+.ai-result-body {
+  padding: 18px 20px;
+  font-size: 14px; line-height: 1.85;
+  color: var(--text2);
+  max-height: 420px; overflow-y: auto;
+}
+.ai-result-body strong { color: var(--text); }
+.ai-result-body em { color: var(--gold2); font-style: italic; }
+.ai-result-body .case-name { color: var(--gold2); font-style: italic; font-weight: 600; }
+
+/* Loading */
+.loading-bar {
+  height: 3px; background: var(--border);
+  border-radius: 2px; overflow: hidden;
+  margin: 16px 0 8px;
+}
+.loading-bar-inner {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), #a78bfa, var(--gold));
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 2px;
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ── FILTER STRIP ── */
+.filter-strip {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.chip {
+  padding: 5px 14px; border-radius: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; cursor: pointer;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  color: var(--text3);
+  transition: all 0.18s;
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+.chip:hover { border-color: var(--gold); color: var(--gold); }
+.chip.active { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+
+/* ── CITATION CARDS ── */
+.citations-list { display: grid; gap: 12px; }
+.c-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 22px;
+  border-left: 3px solid var(--border2);
+  transition: all 0.2s; cursor: pointer;
+  position: relative; overflow: hidden;
+}
+.c-card:hover {
+  border-color: var(--border2);
+  background: var(--surface2);
+  transform: translateX(3px);
+  box-shadow: var(--shadow);
+}
+.c-card::before {
+  content: '';
+  position: absolute; top: 0; right: 0;
+  width: 60px; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.01));
+}
+.c-card[data-cat="criminal"] { border-left-color: var(--crimson); }
+.c-card[data-cat="civil"] { border-left-color: var(--navy); }
+.c-card[data-cat="constitutional"] { border-left-color: var(--amber); }
+.c-card[data-cat="family"] { border-left-color: var(--forest); }
+.c-card[data-cat="labour"] { border-left-color: var(--violet); }
+.c-card[data-cat="tax"] { border-left-color: var(--teal); }
+.c-card[data-cat="property"] { border-left-color: var(--rust); }
+.c-card[data-cat="revenue"] { border-left-color: #c0741a; }
+.c-card[data-cat="consumer"] { border-left-color: #1a9b6a; }
+.c-card[data-cat="arbitration"] { border-left-color: #4a1a9b; }
+
+.c-top {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 12px;
+  margin-bottom: 10px;
+}
+.c-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px; font-weight: 600;
+  color: var(--text); font-style: italic;
+  flex: 1; line-height: 1.4;
+}
+.c-btns { display: flex; gap: 6px; flex-shrink: 0; }
+.btn-xs {
+  padding: 5px 12px; border-radius: 5px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; font-weight: 600;
+  cursor: pointer; border: 1px solid;
+  transition: all 0.18s;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+.btn-xs-view { border-color: var(--border2); color: var(--text3); }
+.btn-xs-view:hover { border-color: var(--text2); color: var(--text); }
+.btn-xs-save { border-color: var(--gold); color: var(--gold); }
+.btn-xs-save:hover { background: var(--gold); color: #000; }
+
+.c-meta {
+  display: flex; gap: 14px; flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.c-meta-item {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--text3);
+  display: flex; align-items: center; gap: 4px;
+}
+.c-meta-item strong { color: var(--text2); }
+.c-excerpt { font-size: 13px; color: var(--text3); line-height: 1.6; }
+
+/* Cat tag inline */
+.cat-tag {
+  display: inline-flex; align-items: center;
+  padding: 2px 8px; border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-left: 6px; vertical-align: middle;
+}
+
+/* ── EBOOK GRID ── */
+.ebooks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 18px;
+}
+.eb-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all 0.2s; cursor: pointer;
+}
+.eb-card:hover { border-color: var(--border2); transform: translateY(-4px); box-shadow: var(--shadow); }
+.eb-spine {
+  height: 130px; display: flex;
+  align-items: center; justify-content: center;
+  font-size: 44px; position: relative;
+}
+.eb-spine::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 1px; background: rgba(255,255,255,0.05);
+}
+.eb-info { padding: 14px 16px; }
+.eb-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 13px; font-weight: 600;
+  color: var(--text); margin-bottom: 5px;
+  line-height: 1.4;
+}
+.eb-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; color: var(--text3);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-bottom: 12px; line-height: 1.6;
+}
+.eb-dl {
+  width: 100%; padding: 7px;
+  background: transparent;
+  border: 1px solid var(--border2);
+  border-radius: 5px;
+  color: var(--text2);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; cursor: pointer;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  transition: all 0.18s;
+}
+.eb-dl:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ── BARE ACTS GRID ── */
+.acts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+.act-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  transition: all 0.2s;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.act-card:hover { border-color: var(--border2); box-shadow: var(--shadow); }
+.act-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px; font-weight: 700;
+  color: var(--text); font-style: italic;
+}
+.act-year-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--gold);
+  font-weight: 600;
+}
+.act-desc { font-size: 12px; color: var(--text3); line-height: 1.5; }
+.act-footer { display: flex; gap: 8px; margin-top: 4px; }
+.act-btn {
+  flex: 1; padding: 7px;
+  border-radius: 5px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; cursor: pointer;
+  border: 1px solid; text-align: center;
+  transition: all 0.18s;
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.act-btn-read { border-color: var(--border2); color: var(--text3); }
+.act-btn-read:hover { border-color: var(--text2); color: var(--text); }
+.act-btn-dl { border-color: var(--gold); color: var(--gold); }
+.act-btn-dl:hover { background: var(--gold); color: #000; }
+
+/* ── UPLOAD ZONE ── */
+.upload-zone {
+  border: 2px dashed var(--border2);
+  border-radius: var(--radius-lg);
+  padding: 52px 36px;
+  text-align: center;
+  transition: all 0.2s; cursor: pointer;
+  margin-bottom: 24px;
+  background: var(--surface);
+  position: relative;
+}
+.upload-zone:hover, .upload-zone.drag-over {
+  border-color: var(--gold);
+  background: var(--gold-glow);
+}
+.upload-zone input { display: none; }
+.upload-icon { font-size: 44px; margin-bottom: 14px; }
+.upload-zone h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px; color: var(--text);
+  margin-bottom: 8px;
+}
+.upload-zone p { font-size: 13px; color: var(--text3); }
+
+/* ── DOWNLOADS TABLE ── */
+.dl-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 13px;
+}
+.dl-table th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--text3);
+  padding: 10px 16px; text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.dl-table td {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+}
+.dl-table tr:hover td { background: var(--surface2); }
+.dl-table td:first-child { color: var(--text); font-weight: 500; }
+
+/* ── MODAL ── */
+.modal-bg {
+  display: none; position: fixed;
+  inset: 0; background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(6px);
+  z-index: 500;
+  align-items: center; justify-content: center;
+}
+.modal-bg.show { display: flex; }
+.modal-box {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  width: min(700px, 94vw);
+  max-height: 85vh; overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  animation: popIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes popIn {
+  from { transform: scale(0.92); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.modal-top {
+  padding: 24px 28px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+.modal-title-wrap { flex: 1; }
+.modal-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 700;
+  color: var(--text); font-style: italic;
+  line-height: 1.3; margin-bottom: 8px;
+}
+.modal-meta-row {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--text3);
+}
+.modal-close {
+  background: none; border: none; cursor: pointer;
+  color: var(--text3); font-size: 20px;
+  padding: 4px; line-height: 1;
+  transition: color 0.2s;
+}
+.modal-close:hover { color: var(--text); }
+.modal-body-area {
+  padding: 24px 28px;
+  font-size: 15px; line-height: 1.9;
+  color: var(--text2);
+}
+.modal-body-area p { margin-bottom: 14px; }
+.modal-body-area h4 {
+  font-family: 'Playfair Display', serif;
+  color: var(--gold2); font-size: 16px;
+  margin: 18px 0 8px;
+}
+.modal-footer {
+  padding: 16px 28px;
+  border-top: 1px solid var(--border);
+  display: flex; gap: 10px;
+}
+.btn-gold {
+  padding: 10px 22px; border-radius: var(--radius);
+  background: var(--gold); border: none;
+  color: #000; font-family: 'Outfit', sans-serif;
+  font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-gold:hover { background: var(--gold2); transform: translateY(-1px); }
+.btn-ghost {
+  padding: 10px 22px; border-radius: var(--radius);
+  background: transparent;
+  border: 1px solid var(--border2); color: var(--text3);
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-ghost:hover { border-color: var(--text2); color: var(--text); }
+
+/* ── SOURCES BAR ── */
+.sources-bar {
+  display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.src-badge {
+  padding: 6px 14px; border-radius: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 600;
+  border: 1px solid; letter-spacing: 0.06em;
+  cursor: default;
+}
+.src-ik { border-color: #2563eb; color: #60a5fa; background: rgba(37,99,235,0.1); }
+.src-scc { border-color: var(--gold); color: var(--gold2); background: var(--gold-dim); }
+.src-manu { border-color: #16a34a; color: #4ade80; background: rgba(22,163,74,0.1); }
+.src-local { border-color: var(--violet); color: #c084fc; background: rgba(106,26,155,0.1); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 24px; right: 24px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  padding: 12px 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--gold2);
+  box-shadow: var(--shadow-lg);
+  z-index: 9999;
+  opacity: 0; transform: translateY(8px);
+  transition: all 0.28s; pointer-events: none;
+  max-width: 340px;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+
+/* ── EMPTY STATE ── */
+.empty {
+  text-align: center; padding: 60px 20px;
+  color: var(--text3);
+}
+.empty .empty-icon { font-size: 48px; margin-bottom: 14px; opacity: 0.4; }
+.empty p { font-size: 14px; line-height: 1.7; }
+
+/* ── PROGRESS ── */
+.progress-ring {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--text3);
+}
+
+/* ── TABS ── */
+.tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+.tab {
+  padding: 10px 20px; cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--text3);
+  border-bottom: 2px solid transparent;
+  transition: all 0.18s; letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: -1px;
+}
+.tab:hover { color: var(--text2); }
+.tab.active { color: var(--gold2); border-bottom-color: var(--gold); }
+
+/* ── GRID LAYOUTS ── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 1000px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ── COURT BADGE ── */
+.court-badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; color: var(--text3);
+  vertical-align: middle;
+}
+
+/* ─── GLOW EFFECTS ─── */
+.gold-glow { text-shadow: 0 0 20px rgba(201,168,76,0.4); }
+.pulse { animation: pulse 2s infinite; }
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* SEARCH HIGHLIGHT */
+.highlight {
+  background: rgba(201,168,76,0.2);
+  color: var(--gold2);
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .stat-row { grid-template-columns: repeat(2,1fr); }
+  .ai-controls { grid-template-columns: 1fr; }
+  .topbar { padding: 0 14px; gap: 10px; }
+  .page { padding: 20px 14px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════ SIDEBAR ════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">⚖</div>
+    <div class="logo-text">LexAdvocate Pro</div>
+  </div>
+
+  <div class="nav-scroll">
+    <div class="nav-section-label">Main</div>
+
+    <div class="nav-item active" onclick="showPage('dashboard')">
+      <div class="nav-icon">🏛</div>
+      <div class="nav-label">Dashboard</div>
+    </div>
+    <div class="nav-item" onclick="showPage('aisearch')">
+      <div class="nav-icon">🤖</div>
+      <div class="nav-label">AI Citation Search</div>
+    </div>
+    <div class="nav-item" onclick="showPage('citations')">
+      <div class="nav-icon">📜</div>
+      <div class="nav-label">Citations Library</div>
+    </div>
+    <div class="nav-item" onclick="showPage('ebooks')">
+      <div class="nav-icon">📚</div>
+      <div class="nav-label">eBooks</div>
+    </div>
+    <div class="nav-item" onclick="showPage('bareacts')">
+      <div class="nav-icon">📋</div>
+      <div class="nav-label">Bare Acts</div>
+    </div>
+    <div class="nav-item" onclick="showPage('myfiles')">
+      <div class="nav-icon">💾</div>
+      <div class="nav-label">My Downloads</div>
+    </div>
+    <div class="nav-item" onclick="showPage('upload')">
+      <div class="nav-icon">⬆</div>
+      <div class="nav-label">Upload Files</div>
+    </div>
+
+    <div class="nav-section-label">Categories</div>
+    <div class="cat-dots" id="sidebar-cats"></div>
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="version-tag">LexAdvocate Pro v2.0<br>Indian Law Suite</div>
+  </div>
+</aside>
+
+<!-- ════════════════ MAIN ════════════════ -->
+<div class="main" id="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="page-title" id="page-title">Dashboard</div>
+    <div class="search-wrap">
+      <input type="text" id="global-search" placeholder="Search citations, acts, sections, case names…" onkeydown="if(event.key==='Enter') globalSearch()"/>
+      <button class="search-go" onclick="globalSearch()">Search</button>
+    </div>
+    <div class="topbar-actions">
+      <button class="tb-btn tb-btn-ai" onclick="showPage('aisearch')">🤖 AI Search</button>
+      <button class="tb-btn tb-btn-upload" onclick="showPage('upload')">⬆ Upload</button>
+    </div>
+  </div>
+
+  <!-- ═══ DASHBOARD ═══ -->
+  <div class="page active" id="page-dashboard">
+    <div class="sec-title">
+      <div>
+        <span class="sec-sub">Welcome</span>
+        <h2>Legal Research <em>Dashboard</em></h2>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-num" id="s-citations">318</div>
+        <div class="stat-label">Citations</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="s-ebooks">72</div>
+        <div class="stat-label">eBooks</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="s-acts">48</div>
+        <div class="stat-label">Bare Acts</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="s-categories">10</div>
+        <div class="stat-label">Categories</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="s-downloads">0</div>
+        <div class="stat-label">My Saved Files</div>
+      </div>
+    </div>
+
+    <!-- Sources Bar -->
+    <div class="sources-bar">
+      <span class="src-badge src-ik">✓ Indian Kanoon</span>
+      <span class="src-badge src-scc">✓ SCC Online</span>
+      <span class="src-badge src-manu">✓ Manupatra</span>
+      <span class="src-badge src-local">✓ Local Files</span>
+      <span style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--text3); align-self:center; margin-left:4px;">— AI searches all sources simultaneously</span>
+    </div>
+
+    <!-- Quick AI Panel -->
+    <div class="ai-panel">
+      <div class="ai-panel-header">
+        <span class="ai-badge">AI Powered</span>
+        <h3>Quick Citation Search</h3>
+      </div>
+      <p>Enter any legal query — case name, section number, legal principle, or topic. AI fetches the most relevant Indian judgments across all databases instantly.</p>
+      <div class="ai-controls">
+        <input class="ai-input" id="q-dash" placeholder="e.g. Section 302 IPC landmark Supreme Court judgments on murder…"/>
+        <select class="ai-select" id="src-dash">
+          <option value="all">All Sources</option>
+          <option value="indiankanoon">Indian Kanoon</option>
+          <option value="scc">SCC Online</option>
+          <option value="manupatra">Manupatra</option>
+        </select>
+        <select class="ai-cat-select" id="cat-dash">
+          <option value="">All Categories</option>
+          <option value="criminal">Criminal</option>
+          <option value="civil">Civil</option>
+          <option value="constitutional">Constitutional</option>
+          <option value="family">Family</option>
+          <option value="labour">Labour</option>
+          <option value="tax">Tax</option>
+          <option value="property">Property</option>
+          <option value="revenue">Revenue</option>
+          <option value="consumer">Consumer</option>
+          <option value="arbitration">Arbitration</option>
+        </select>
+        <button class="ai-go-btn" id="btn-dash" onclick="runAI('dash')">Fetch →</button>
+      </div>
+      <div class="ai-result-box" id="res-dash">
+        <div class="ai-result-header-bar">
+          <span class="ai-result-label" id="res-dash-label">Results</span>
+          <div class="ai-result-actions">
+            <button class="btn-xs btn-xs-save" onclick="saveAI('dash')">⬇ Save</button>
+            <button class="btn-xs btn-xs-view" onclick="document.getElementById('res-dash').classList.remove('show')">Clear</button>
+          </div>
+        </div>
+        <div class="ai-result-body" id="res-dash-body"></div>
+      </div>
+    </div>
+
+    <!-- Recent Citations preview -->
+    <div class="sec-title">
+      <div>
+        <span class="sec-sub">Preview</span>
+        <h2>Recent <em>Citations</em></h2>
+      </div>
+      <button class="btn-ghost" onclick="showPage('citations')">View All →</button>
+    </div>
+    <div class="citations-list" id="recent-list"></div>
+  </div>
+
+  <!-- ═══ AI SEARCH ═══ -->
+  <div class="page" id="page-aisearch">
+    <div class="sec-title">
+      <div>
+        <span class="sec-sub">Premium Feature</span>
+        <h2>AI-Powered <em>Citation Search</em></h2>
+      </div>
+    </div>
+
+    <div class="sources-bar">
+      <span class="src-badge src-ik">Indian Kanoon</span>
+      <span class="src-badge src-scc">SCC Online</span>
+      <span class="src-badge src-manu">Manupatra</span>
+      <span class="src-badge src-local">Local Files</span>
+    </div>
+
+    <div class="ai-panel">
+      <div class="ai-panel-header">
+        <span class="ai-badge">Claude AI</span>
+        <h3>Advanced Legal Research Engine</h3>
+      </div>
+      <p>Describe your legal issue in detail. The AI will retrieve, analyse and summarise the most relevant case laws, ratio decidendi, obiter dicta, statutory provisions and precedents from all Indian legal databases simultaneously.</p>
+      <div class="ai-controls">
+        <input class="ai-input" id="q-main" placeholder="Describe your legal issue or enter case name, section, topic…"/>
+        <select class="ai-select" id="src-main">
+          <option value="all">All Sources</option>
+          <option value="indiankanoon">Indian Kanoon</option>
+          <option value="scc">SCC Online</option>
+          <option value="manupatra">Manupatra</option>
+        </select>
+        <select class="ai-cat-select" id="cat-main">
+          <option value="">All Categories</option>
+          <option value="criminal">Criminal</option>
+          <option value="civil">Civil</option>
+          <option value="constitutional">Constitutional</option>
+          <option value="family">Family</option>
+          <option value="labour">Labour</option>
+          <option value="tax">Tax</option>
+          <option value="property">Property</option>
+          <option value="revenue">Revenue</option>
+          <option value="consumer">Consumer</option>
+          <option value="arbitration">Arbitration</option>
+        </select>
+        <button class="ai-go-btn" id="btn-main" onclick="runAI('main')">Search →</button>
+      </div>
+      <div class="ai-result-box" id="res-main">
+        <div class="ai-result-header-bar">
+          <span class="ai-result-label" id="res-main-label">Results</span>
+          <div class="ai-result-actions">
+            <button class="btn-xs btn-xs-save" onclick="saveAI('main')">⬇ Save Results</button>
+            <button class="btn-xs btn-xs-view" onclick="document.getElementById('res-main').classList.remove('show')">✕ Clear</button>
+          </div>
+        </div>
+        <div class="ai-result-body" id="res-main-body"></div>
+      </div>
+    </div>
+
+    <!-- Search History -->
+    <div class="sec-title">
+      <div>
+        <span class="sec-sub">History</span>
+        <h2>Recent <em>Searches</em></h2>
+      </div>
+      <button class="btn-ghost" onclick="clearHistory()">Clear History</button>
+    </div>
+    <div id="search-history-list" class="citations-list">
+      <div class="empty"><div class="empty-icon">🔍</div><p>No searches yet. Use the panel above to fetch citations.</p></div>
+    </div>
+  </div>
+
+  <!-- ═══ CITATIONS ═══ -->
+  <div class="page" id="page-citations">
+    <div class="sec-title">
+      <div>
+        <span class="sec-sub">Full Library</span>
+        <h2>Citations <em>Database</em></h2>
+      </div>
+      <div class="sec-actions">
+        <span id="citations-count" style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text3); align-self:center;"></span>
+      </div>
+    </div>
+    <div class="filter-strip" id="cit-filters"></div>
+    <div class="citations-list" id="citations-list"></div>
+  </div>
+
+  <!-- ═══ EBOOKS ═══ -->
+  <div class="page" id="page-ebooks">
+    <div class="sec-title">
+      <div>
+        <span class="sec-sub">Digital Library</span>
+        <h2>eBooks <em>Collection</em></h2>
+      </div>
+    </div>
+    <div class="filter-strip" id="eb-filters"></div>
+    <div class="ebooks-grid" id="ebooks-grid"></div>
+  </div>
+
+  <!-- ═══ BARE ACTS ═══ -->
+  <div class="page" id="page-bareacts">
+    <div class="sec-title">
+      <div>
+        <span class="sec-sub">Statutory Reference</span>
+        <h2>Bare <em>Acts</em></h2>
+      </div>
+    </div>
+    <div class="filter-strip" id="act-filters"></div>
+    <div class="acts-grid" id="acts-grid"></div>
+  </div>
+
+  <!-- ═══ MY DOWNLOADS ═══ -->
+  <div class="page" id="page-myfiles">
+    <div class="sec-title">
+      <div>
+        <span class="sec-sub">Saved Files</span>
+        <h2>My <em>Downloads</em></h2>
+      </div>
+      <button class="btn-ghost" onclick="clearDownloads()">Clear All</button>
+    </div>
+    <div id="dl-content"></div>
+  </div>
+
+  <!-- ═══ UPLOAD ═══ -->
+  <div class="page" id="page-upload">
+    <div class="sec-title">
+      <div>
+        <span class="sec-sub">Import Citations</span>
+        <h2>Upload <em>Files</em></h2>
+      </div>
+    </div>
+
+    <div class="upload-zone" id="drop-zone" onclick="document.getElementById('file-input').click()"
+         ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFiles(event)">
+      <input type="file" id="file-input" multiple accept=".pdf,.docx,.txt,.doc" onchange="handleFiles(this.files)"/>
+      <div class="upload-icon">📂</div>
+      <h3>Drop Judgment Files Here</h3>
+      <p>Drag & drop or click to browse — PDF, DOCX, TXT accepted<br>Files are stored locally and indexed for search</p>
+    </div>
+
+    <div class="sec-title" style="margin-top:12px;">
+      <div>
+        <span class="sec-sub">Indexed</span>
+        <h2>Uploaded <em>Files</em></h2>
+      </div>
+    </div>
+    <div class="citations-list" id="upload-list">
+      <div class="empty"><div class="empty-icon">📂</div><p>No files uploaded yet.</p></div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- ════════════════ MODAL ════════════════ -->
+<div class="modal-bg" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <div class="modal-top">
+      <div class="modal-title-wrap">
+        <div class="modal-title" id="m-title"></div>
+        <div class="modal-meta-row" id="m-meta"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body-area" id="m-body"></div>
+    <div class="modal-footer">
+      <button class="btn-gold" id="m-dl-btn">⬇ Save to Downloads</button>
+      <button class="btn-ghost" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ════════════════ SCRIPT ════════════════ -->
+<script>
+// ══════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════
+const CATS = [
+  { id:'criminal',    label:'Criminal',      color:'#c0392b', dot:'#e74c3c' },
+  { id:'civil',       label:'Civil',         color:'#1a4a8a', dot:'#3498db' },
+  { id:'constitutional',label:'Constitutional',color:'#9b6a00',dot:'#f39c12' },
+  { id:'family',      label:'Family',        color:'#1a6e3c', dot:'#2ecc71' },
+  { id:'labour',      label:'Labour',        color:'#6a1a9b', dot:'#9b59b6' },
+  { id:'tax',         label:'Tax',           color:'#0a7a8a', dot:'#1abc9c' },
+  { id:'property',    label:'Property',      color:'#9b3a00', dot:'#e67e22' },
+  { id:'revenue',     label:'Revenue',       color:'#7a5a00', dot:'#f1c40f' },
+  { id:'consumer',    label:'Consumer',      color:'#005a1a', dot:'#27ae60' },
+  { id:'arbitration', label:'Arbitration',   color:'#1a1a7a', dot:'#8e44ad' }
+];
+
+const CITATIONS = [
+  // CRIMINAL
+  { id:1,  cat:'criminal',   title:'State of Maharashtra v. Salman Salim Khan',    court:'Supreme Court of India', year:2023, bench:'3-Judge Bench', section:'S.304-A IPC', source:'Indian Kanoon',
+    excerpt:'Landmark judgment on criminal negligence. Culpable homicide not amounting to murder; gross negligence must be proven beyond reasonable doubt for conviction under Section 304-A.',
+    full:'This judgment addressed criminal negligence under Section 304-A IPC. The court held that conviction requires proof of gross negligence, that reckless or wanton disregard for human life must be established beyond reasonable doubt. The mere occurrence of an accident is insufficient for conviction. The court distinguished between simple negligence (which may give rise to civil liability) and gross negligence (required for criminal liability). Important precedent in road accident cases and professional negligence matters.' },
+  { id:2,  cat:'criminal',   title:'Arnesh Kumar v. State of Bihar',              court:'Supreme Court of India', year:2014, bench:'2-Judge Bench',  section:'S.498-A IPC / S.41 CrPC', source:'SCC Online',
+    excerpt:'Landmark guidelines on arrest in matrimonial disputes. Police cannot mechanically arrest without applying the Section 41 CrPC checklist. Magistrates must record reasons.',
+    full:'The Supreme Court issued mandatory guidelines to prevent mechanical arrest in matrimonial cases. Police must satisfy themselves of the necessity of arrest by applying the checklist under Section 41 CrPC. Magistrates must record reasons while authorising detention. Non-compliance will attract departmental action and contempt. The court noted that approximately 3,97,323 persons were arrested under Section 498-A in 2012 and this trend needed correction.' },
+  { id:3,  cat:'criminal',   title:'Bachan Singh v. State of Punjab',             court:'Supreme Court of India', year:1980, bench:'Constitution Bench (5)', section:'S.302 IPC – Death Penalty', source:'Manupatra',
+    excerpt:'Death penalty constitutional. Upheld under Article 21 subject to the "rarest of rare" doctrine. Fundamental framework for capital punishment in India.',
+    full:'The Constitution Bench upheld the constitutionality of the death penalty under Section 302 IPC, reading it with the "rarest of rare" doctrine. The court held that the death penalty can only be imposed when the alternative of life imprisonment is unquestionably foreclosed. The court laid down mitigating and aggravating circumstances to guide courts in sentencing. This judgment remains the cornerstone of capital punishment jurisprudence in India.' },
+  { id:4,  cat:'criminal',   title:'Sunil Batra v. Delhi Administration',         court:'Supreme Court of India', year:1980, bench:'Constitution Bench', section:'Art.21 / Prisons Act', source:'SCC Online',
+    excerpt:'Prisoners retain fundamental rights. Solitary confinement violates Article 21. Habeas corpus lies against prison authorities for illegal detention and torture.',
+    full:'Justice V.R. Krishna Iyer delivered a landmark judgment holding that imprisoned persons do not shed their fundamental rights at the jail gate. The writ of habeas corpus is available against illegal detention, torture, and cruel treatment within prison. The court issued detailed guidelines for the humane treatment of prisoners including conditions for solitary confinement, bar fetters, and the rights of condemned prisoners.' },
+  { id:5,  cat:'criminal',   title:'Siddharam Satlingappa Mhetre v. State of Maharashtra', court:'Supreme Court of India', year:2011, bench:'2-Judge Bench', section:'S.438 CrPC – Anticipatory Bail', source:'Indian Kanoon',
+    excerpt:'Comprehensive guidelines for granting anticipatory bail. Personal liberty is paramount. Courts should not be unduly restrictive in granting anticipatory bail.',
+    full:'The Supreme Court issued comprehensive guidelines for granting anticipatory bail under Section 438 CrPC. The court emphasised that personal liberty is one of the most important fundamental rights and courts should not be unduly restrictive. The anticipatory bail is not limited in time unless specifically ordered. The court listed factors to be considered while granting or refusing anticipatory bail and held that the apprehension of arrest must be reasonable and not merely speculative.' },
+
+  // CONSTITUTIONAL
+  { id:6,  cat:'constitutional', title:'K.S. Puttaswamy v. Union of India',      court:'Supreme Court of India', year:2017, bench:'9-Judge Constitution Bench', section:'Art.21 – Right to Privacy', source:'Indian Kanoon',
+    excerpt:'Right to Privacy declared a fundamental right under Article 21. Historic unanimous judgment overruling M.P. Sharma and Kharak Singh on informational and decisional privacy.',
+    full:'All nine judges unanimously held that the right to privacy is a fundamental right protected under the Indian Constitution, primarily under Article 21. The judgment comprehensively overruled M.P. Sharma v. Satish Chandra (1954) and Kharak Singh v. State of U.P. (1963). The court recognised three aspects of privacy: (1) intrusion with bodily integrity, (2) informational privacy, and (3) the right to make choices. This judgment had far-reaching implications for surveillance, data protection and Aadhaar.' },
+  { id:7,  cat:'constitutional', title:'Maneka Gandhi v. Union of India',        court:'Supreme Court of India', year:1978, bench:'7-Judge Bench', section:'Art.21 – Personal Liberty', source:'SCC Online',
+    excerpt:'Procedure under Article 21 must be just, fair and reasonable. Right to travel abroad is a fundamental right. Expanded the scope of personal liberty significantly.',
+    full:'This landmark judgment radically transformed the interpretation of Article 21. The court held that the procedure prescribed by law for depriving a person of life or personal liberty must be just, fair and reasonable. The court also held that Articles 14, 19 and 21 are not mutually exclusive — a law affecting personal liberty must pass the test of all three articles. Justice Bhagwati\'s concurring judgment introduced the doctrine of "golden triangle" of fundamental rights.' },
+  { id:8,  cat:'constitutional', title:'Kesavananda Bharati v. State of Kerala', court:'Supreme Court of India', year:1973, bench:'13-Judge Constitution Bench', section:'Art.368 – Basic Structure', source:'Manupatra',
+    excerpt:'The Basic Structure doctrine established. Parliament cannot abrogate the basic structure of the Constitution. Landmark 7:6 majority judgment with far-reaching consequences.',
+    full:'In a 7:6 majority, the Supreme Court held that while Parliament has wide powers to amend the Constitution under Article 368, it cannot damage or destroy the "basic structure" of the Constitution. Although the majority did not exhaustively define basic structure, subsequent decisions have included: supremacy of the Constitution, republican and democratic form of government, secular character, separation of powers, federal character, and judicial review. This remains the most significant constitutional judgment in India.' },
+  { id:9,  cat:'constitutional', title:'Navtej Singh Johar v. Union of India',   court:'Supreme Court of India', year:2018, bench:'Constitution Bench (5)', section:'S.377 IPC / Art.14,15,19,21', source:'Indian Kanoon',
+    excerpt:'Section 377 IPC decriminalised insofar as it applies to consensual same-sex relations between adults. Constitutional morality must prevail over social morality.',
+    full:'The Constitution Bench unanimously struck down Section 377 IPC to the extent it criminalised consensual sexual acts between adults of the same sex. The court held that constitutional morality, not social morality, must guide the interpretation of fundamental rights. The right to sexual orientation is a component of identity and dignity protected under Article 21. The court overruled Suresh Kumar Koushal v. Naz Foundation (2013).' },
+
+  // FAMILY
+  { id:10, cat:'family',     title:'Shayara Bano v. Union of India',             court:'Supreme Court of India', year:2017, bench:'Constitution Bench (5)', section:'Muslim Personal Law', source:'Manupatra',
+    excerpt:'Triple Talaq (talaq-e-biddat) declared unconstitutional by 3:2 majority as manifestly arbitrary under Article 14. Foundation for the Muslim Women (Protection) Act 2019.',
+    full:'In a 3:2 majority judgment, the Supreme Court held that the practice of instantaneous triple talaq (talaq-e-biddat) is unconstitutional as it is manifestly arbitrary under Article 14 of the Constitution. Justice Nariman (for himself and Justice Lalit) held it violates Article 14. Justice Joseph concurred. The two dissenting judges held it is a matter for the Legislature. The Muslim Women (Protection of Rights on Marriage) Act, 2019 subsequently criminalised the practice.' },
+  { id:11, cat:'family',     title:'Vineeta Sharma v. Rakesh Sharma',            court:'Supreme Court of India', year:2020, bench:'3-Judge Bench', section:'Hindu Succession Act S.6', source:'SCC Online',
+    excerpt:'Daughters are coparceners by birth. Amendment in Hindu Succession Act 2005 applies retrospectively. Daughter has equal rights as son in ancestral property.',
+    full:'The Supreme Court held that daughters become coparceners by birth and have equal rights in coparcenary property as sons. The 2005 amendment to Section 6 of the Hindu Succession Act applies retrospectively — the right accrues by birth and does not depend on the father being alive on the date of the amendment. This overruled the contrary view in Prakash v. Phulavati. This judgment secured equal inheritance rights for millions of Hindu daughters.' },
+  { id:12, cat:'family',     title:'Danial Latifi v. Union of India',            court:'Supreme Court of India', year:2001, bench:'Constitution Bench (5)', section:'Muslim Women (Protection) Act 1986', source:'Indian Kanoon',
+    excerpt:'Muslim husband liable to make fair and reasonable provision for maintenance and future of divorced wife beyond the iddat period. Upholds constitutional validity of the Act.',
+    full:'The Constitution Bench upheld the constitutional validity of the Muslim Women (Protection of Rights on Divorce) Act, 1986 while interpreting it broadly to protect divorced Muslim women. The court held that the Act requires a Muslim husband to make a fair and reasonable provision for the maintenance and future of the divorced wife, not limited to the iddat period, within the iddat period. This interpretation harmonised the Act with constitutional rights.' },
+
+  // CIVIL
+  { id:13, cat:'civil',      title:'Vishaka v. State of Rajasthan',              court:'Supreme Court of India', year:1997, bench:'3-Judge Bench', section:'Art.14,15,19,21 – POSH', source:'SCC Online',
+    excerpt:'Vishaka Guidelines for prevention of sexual harassment at workplace issued. Binding on all employers. Foundation for POSH Act 2013. Writ filed under Article 32.',
+    full:'Following the gang rape of Bhanwari Devi, the Supreme Court issued the Vishaka Guidelines for the prevention of sexual harassment at workplaces. These guidelines — covering definition, prohibition, duty of the employer, complaint mechanism, awareness, and third-party harassment — were binding on all employers and had the force of law until replaced by the POSH Act in 2013. The court used the Convention on the Elimination of All Forms of Discrimination Against Women (CEDAW) as interpretive aid.' },
+  { id:14, cat:'civil',      title:'Lalman Shukla v. Gauri Datt',                court:'Allahabad High Court', year:1913, bench:'Single Bench', section:'Indian Contract Act S.2(h)', source:'Indian Kanoon',
+    excerpt:'Acceptance of an offer must be made with knowledge of the offer. Performing the conditions of an offer without knowledge does not create a contract. Foundational contract law.',
+    full:'The court held that a person who performs the conditions of an offer without knowledge of it cannot claim the reward or enforce the contract. The claimant, a servant sent to search for a missing nephew, found him but had no knowledge of the reward offered by the defendant. The court dismissed his suit. The principle: a contract requires offer + acceptance with knowledge + consideration. Acceptance without awareness of the offer is invalid.' },
+  { id:15, cat:'civil',      title:'M.C. Mehta v. Union of India (Oleum Gas)',   court:'Supreme Court of India', year:1987, bench:'Constitution Bench', section:'Art.32 / Absolute Liability', source:'Manupatra',
+    excerpt:'Absolute liability rule established for hazardous enterprises. No exception to liability when harm occurs from hazardous activity. Evolution beyond Rylands v. Fletcher.',
+    full:'Justice P.N. Bhagwati articulated the principle of absolute liability for enterprises engaged in hazardous or inherently dangerous activities. Unlike strict liability under Rylands v. Fletcher, absolute liability admits no exceptions or defences. The court held that such enterprises owe an absolute and non-delegable duty to compensate for harm. The compensation must be proportional to the magnitude of the enterprise. This case arose from the oleum gas leak from Shriram Foods.' },
+
+  // LABOUR
+  { id:16, cat:'labour',     title:'Workmen v. Meenakshi Mills Ltd.',             court:'Supreme Court of India', year:1994, bench:'Constitution Bench', section:'Industrial Disputes Act S.11-A', source:'Indian Kanoon',
+    excerpt:'Reinstatement with full back wages is the general rule upon illegal termination. Labour courts must record specific reasons to deny back wages. Worker presumed unemployed.',
+    full:'The Constitution Bench settled that reinstatement with back wages is the ordinary consequence of illegal termination. The burden is on the employer to prove the worker was gainfully employed elsewhere. Courts must record cogent reasons for denying back wages. The court also clarified the scope of Section 11-A of the Industrial Disputes Act empowering labour courts to interfere with punishment imposed by management. This remains the leading case on remedies for wrongful termination.' },
+  { id:17, cat:'labour',     title:'Harjinder Singh v. Punjab State Warehousing', court:'Supreme Court of India', year:2010, bench:'2-Judge Bench', section:'Industrial Disputes Act S.25-F', source:'SCC Online',
+    excerpt:'Non-compliance with Section 25-F (retrenchment) renders retrenchment void ab initio. Reinstatement follows automatically. Procedural compliance is mandatory.',
+    full:'The Supreme Court held that failure to comply with the mandatory requirements of Section 25-F of the Industrial Disputes Act — payment of retrenchment compensation and one month\'s notice — renders the retrenchment void ab initio. The workman is entitled to reinstatement as a matter of right. The court rejected the argument that substantial compliance is sufficient and held that the provisions are mandatory and their violation is fatal to the retrenchment order.' },
+
+  // TAX
+  { id:18, cat:'tax',        title:'Commissioner of IT v. Vodafone International Holdings', court:'Supreme Court of India', year:2012, bench:'2-Judge Bench', section:'Income Tax Act S.9', source:'Manupatra',
+    excerpt:'Offshore share transfer of Cayman Islands company not taxable in India. Situs of shares relevant. Retrospective amendment challenged. Landmark international tax judgment.',
+    full:'The Supreme Court held that the acquisition by Vodafone of shares in a Cayman Islands company (HTIL) did not amount to a transfer of capital assets situated in India taxable under Section 9(1)(i) of the Income Tax Act. The situs of the shares was outside India. The court held that the transaction must be viewed holistically. The Income Tax Department\'s attempt to tax Rs. 11,000 crores was rejected. The government subsequently introduced a retrospective amendment which was later withdrawn.' },
+  { id:19, cat:'tax',        title:'CIT v. Calcutta Knitwears, Ludhiana',        court:'Supreme Court of India', year:2014, bench:'2-Judge Bench', section:'Income Tax Act S.263', source:'SCC Online',
+    excerpt:'Commissioner\'s powers under Section 263 cannot be exercised where the assessing officer\'s order is one of two possible views. Merger principle discussed in detail.',
+    full:'The Supreme Court held that the power of the Commissioner under Section 263 to revise an assessment order as erroneous and prejudicial to the interests of revenue cannot be exercised merely because the Commissioner has a different view from the assessing officer. Where two views are possible and the assessing officer has adopted one of them, Section 263 cannot be invoked. The court also discussed the merger principle in tax law.' },
+
+  // PROPERTY
+  { id:20, cat:'property',   title:'Suraj Lamp v. State of Haryana',             court:'Supreme Court of India', year:2011, bench:'2-Judge Bench', section:'Transfer of Property Act / Registration Act', source:'Indian Kanoon',
+    excerpt:'Sale of immovable property through General Power of Attorney or Agreement to Sell is not valid transfer of title. Compulsory registration of sale deed reaffirmed.',
+    full:'The Supreme Court categorically held that property can be legally and lawfully transferred or conveyed only by a registered deed of conveyance. Transactions through General Power of Attorney (GPA) or Agreement to Sell (ATS) do not confer title or create any interest in immovable property. The court directed all sub-registrars not to register GPA sales and issued directions to states to take back possession of properties sold through GPA. This judgment was a major blow to benami and unregistered property transactions.' },
+  { id:21, cat:'property',   title:'Asha Devi v. Dukhi Sao',                    court:'Patna High Court',       year:1974, bench:'Single Bench', section:'T.P. Act S.53-A', source:'Manupatra',
+    excerpt:'Part performance under Section 53-A is a shield not a sword. Transferee must prove readiness and willingness. Possession without written contract insufficient.',
+    full:'The court discussed the doctrine of part performance under Section 53-A of the Transfer of Property Act. The doctrine is a shield available only to a person who has taken possession pursuant to a contract, not a sword to sue for title. The transferee must prove: existence of a written contract, possession taken in part performance, and readiness and willingness to perform his part of the contract. The doctrine does not confer title but protects possession.' },
+
+  // CONSUMER
+  { id:22, cat:'consumer',   title:'Ghaziabad Dev. Authority v. Balbir Singh',   court:'Supreme Court of India', year:2004, bench:'2-Judge Bench', section:'Consumer Protection Act 1986', source:'SCC Online',
+    excerpt:'Compensation for mental agony, harassment and suffering permissible under Consumer Protection Act. Development authority liable for delay in handing over possession.',
+    full:'The Supreme Court held that housing authorities who fail to deliver possession on time are liable to pay compensation for mental agony, harassment and suffering under the Consumer Protection Act, 1986. The amount of compensation must be reasonable and cannot be punitive. The court set aside the National Commission\'s award of Rs. 1 lakh and substituted it with payment of interest at 18% on the amount deposited. The case firmly established consumer rights against public authorities.' },
+
+  // REVENUE
+  { id:23, cat:'revenue',    title:'State of U.P. v. Synthetics & Chemicals Ltd.', court:'Supreme Court of India', year:1991, bench:'3-Judge Bench', section:'State Excise Act', source:'Indian Kanoon',
+    excerpt:'Levy of additional excise duty on industrial alcohol upheld. State power to tax alcoholic products discussed. Distinction between industrial and potable alcohol for regulatory purposes.',
+    full:'The Supreme Court examined the power of state governments to levy excise duty on industrial alcohol under the State Excise Act. The court held that states have legislative competence to regulate and tax industrial alcohol under Entry 8 of List II of the Seventh Schedule. The licensing regime for industrial alcohol is a valid exercise of state power. This case is frequently cited in disputes regarding excise on liquor and industrial spirits.' },
+
+  // ARBITRATION
+  { id:24, cat:'arbitration', title:'BCCI v. Kochi Cricket Pvt. Ltd.',           court:'Supreme Court of India', year:2018, bench:'2-Judge Bench', section:'Arbitration Act 2015 S.36', source:'Manupatra',
+    excerpt:'Amended Section 36 of Arbitration Act (automatic stay removed) applies to all pending proceedings. Balance of convenience and prima facie case still required for stay.',
+    full:'The Supreme Court held that the amended Section 36 of the Arbitration and Conciliation (Amendment) Act, 2015 — which removed automatic stay of arbitral awards on mere filing of a Section 34 petition — applies to Section 34 petitions filed even before the amendment but pending on the date the amendment came into force (23.10.2015). Courts must apply the principles of Order 41 Rule 5 CPC for granting stays, requiring the party to make out a prima facie case.' }
+];
+
+const EBOOKS = [
+  { id:1,  cat:'criminal',       title:'Indian Penal Code 1860 — Annotated',         author:'Dr. K.D. Gaur',      year:2024, pages:1240, icon:'⚔',   color:'linear-gradient(135deg,#7f0000,#c0392b)' },
+  { id:2,  cat:'criminal',       title:'CrPC 1973 with Commentary',                   author:'R.V. Kelkar',        year:2024, pages:984,  icon:'⚖',   color:'linear-gradient(135deg,#5a0000,#992b2b)' },
+  { id:3,  cat:'civil',          title:'Civil Procedure Code — Mulla',                author:'Mulla',              year:2024, pages:1080, icon:'📋',  color:'linear-gradient(135deg,#00195a,#1a468b)' },
+  { id:4,  cat:'civil',          title:'Indian Evidence Act — Case Law Digest',       author:'Vepa P. Sarathi',    year:2023, pages:672,  icon:'🔍',  color:'linear-gradient(135deg,#002060,#2563eb)' },
+  { id:5,  cat:'constitutional', title:'Constitutional Law of India',                 author:'M.P. Jain',          year:2023, pages:1560, icon:'🏛',  color:'linear-gradient(135deg,#5a3a00,#9b6a00)' },
+  { id:6,  cat:'constitutional', title:'Commentary on Constitution of India',         author:'D.D. Basu',          year:2024, pages:2200, icon:'📜',  color:'linear-gradient(135deg,#7a5200,#c8921a)' },
+  { id:7,  cat:'family',         title:'Hindu Marriage Act with Commentary',          author:'Paras Diwan',        year:2024, pages:488,  icon:'💍',  color:'linear-gradient(135deg,#003a1a,#1a6e3c)' },
+  { id:8,  cat:'family',         title:'Muslim Law in India',                         author:'Tahir Mahmood',      year:2023, pages:542,  icon:'☪',   color:'linear-gradient(135deg,#1a4a00,#2e7d32)' },
+  { id:9,  cat:'labour',         title:'Industrial Disputes Act — Commentary',        author:'S.C. Srivastava',    year:2022, pages:544,  icon:'🏭',  color:'linear-gradient(135deg,#3a007a,#6a1a9b)' },
+  { id:10, cat:'labour',         title:'Labour Laws — Complete Compendium',           author:'V.G. Goswami',       year:2024, pages:820,  icon:'⚙',   color:'linear-gradient(135deg,#2a005a,#571aab)' },
+  { id:11, cat:'tax',            title:'Income Tax Act 1961 — Singhania',             author:'Vinod K. Singhania', year:2024, pages:1820, icon:'💰',  color:'linear-gradient(135deg,#004a5a,#0a7a8a)' },
+  { id:12, cat:'tax',            title:'GST Law and Commentary',                      author:'V.S. Datey',         year:2024, pages:1340, icon:'📊',  color:'linear-gradient(135deg,#00555a,#1abc9c)' },
+  { id:13, cat:'property',       title:'Transfer of Property Act — Mulla',            author:'Mulla',              year:2022, pages:720,  icon:'🏠',  color:'linear-gradient(135deg,#5a2000,#9b3a00)' },
+  { id:14, cat:'property',       title:'Registration Act — Commentary',               author:'S.S. Srivastava',    year:2023, pages:380,  icon:'📝',  color:'linear-gradient(135deg,#4a2800,#8b5000)' },
+  { id:15, cat:'consumer',       title:'Consumer Protection Act 2019',                author:'D.N. Mathur',        year:2023, pages:460,  icon:'🛒',  color:'linear-gradient(135deg,#005a2a,#1a9b6a)' },
+  { id:16, cat:'arbitration',    title:'Arbitration & Conciliation Act',              author:'O.P. Malhotra',      year:2024, pages:890,  icon:'⚡',  color:'linear-gradient(135deg,#1a005a,#4a1a9b)' },
+  { id:17, cat:'revenue',        title:'Land Acquisition Laws — India',               author:'G.C. Mathur',        year:2023, pages:560,  icon:'🌾',  color:'linear-gradient(135deg,#5a4400,#9b7a00)' },
+  { id:18, cat:'civil',          title:'Specific Relief Act — Commentary',            author:'P.C. Mogha',         year:2022, pages:440,  icon:'🎯',  color:'linear-gradient(135deg,#003a6a,#1a5a9b)' }
+];
+
+const BARE_ACTS = [
+  { id:1,  cat:'criminal',       title:'Indian Penal Code, 1860',             yr:'Act No. 45 of 1860',     sec:511, desc:'Primary criminal code covering all offences and their punishments' },
+  { id:2,  cat:'criminal',       title:'Code of Criminal Procedure, 1973',    yr:'Act No. 2 of 1974',      sec:484, desc:'Procedural law for administration of criminal justice in India' },
+  { id:3,  cat:'criminal',       title:'POCSO Act, 2012',                     yr:'Act No. 32 of 2012',     sec:46,  desc:'Protection of Children from Sexual Offences' },
+  { id:4,  cat:'criminal',       title:'Prevention of Corruption Act, 1988',  yr:'Act No. 49 of 1988',     sec:31,  desc:'Prevention of corruption by public servants' },
+  { id:5,  cat:'civil',          title:'Code of Civil Procedure, 1908',       yr:'Act No. 5 of 1908',      sec:158, desc:'Procedural law for civil justice administration' },
+  { id:6,  cat:'civil',          title:'Indian Evidence Act, 1872',           yr:'Act No. 1 of 1872',      sec:167, desc:'Rules of evidence in judicial proceedings in India' },
+  { id:7,  cat:'civil',          title:'Specific Relief Act, 1963',           yr:'Act No. 47 of 1963',     sec:44,  desc:'Specific performance of contracts and injunctions' },
+  { id:8,  cat:'civil',          title:'Negotiable Instruments Act, 1881',    yr:'Act No. 26 of 1881',     sec:148, desc:'Governs cheques, bills of exchange and promissory notes' },
+  { id:9,  cat:'constitutional', title:'Constitution of India, 1950',         yr:'26 January 1950',        sec:395, desc:'Supreme law of India with fundamental rights and duties' },
+  { id:10, cat:'constitutional', title:'Right to Information Act, 2005',      yr:'Act No. 22 of 2005',     sec:31,  desc:'Secures citizens right to information from public authorities' },
+  { id:11, cat:'family',         title:'Hindu Marriage Act, 1955',            yr:'Act No. 25 of 1955',     sec:30,  desc:'Governs marriage and matrimonial reliefs for Hindus' },
+  { id:12, cat:'family',         title:'Hindu Succession Act, 1956',          yr:'Act No. 30 of 1956',     sec:31,  desc:'Law of intestate succession for Hindus' },
+  { id:13, cat:'family',         title:'Protection of Women from DV Act, 2005',yr:'Act No. 43 of 2005',   sec:37,  desc:'Protection of women from domestic violence and abuse' },
+  { id:14, cat:'family',         title:'Guardian and Wards Act, 1890',        yr:'Act No. 8 of 1890',      sec:53,  desc:'Appointment of guardians for minors and wards' },
+  { id:15, cat:'labour',         title:'Industrial Disputes Act, 1947',       yr:'Act No. 14 of 1947',     sec:40,  desc:'Investigation and settlement of industrial disputes' },
+  { id:16, cat:'labour',         title:'Employees Provident Funds Act, 1952', yr:'Act No. 19 of 1952',     sec:17,  desc:'Provident fund, pension and insurance for employees' },
+  { id:17, cat:'labour',         title:'Minimum Wages Act, 1948',             yr:'Act No. 11 of 1948',     sec:31,  desc:'Fixing minimum rates of wages for workers' },
+  { id:18, cat:'tax',            title:'Income Tax Act, 1961',                yr:'Act No. 43 of 1961',     sec:298, desc:'Consolidates and amends law relating to income tax' },
+  { id:19, cat:'tax',            title:'Central Goods and Services Tax Act',  yr:'Act No. 12 of 2017',     sec:174, desc:'Levy and collection of GST at central level' },
+  { id:20, cat:'tax',            title:'Customs Act, 1962',                   yr:'Act No. 52 of 1962',     sec:161, desc:'Levy, collection and regulation of customs duties' },
+  { id:21, cat:'property',       title:'Transfer of Property Act, 1882',      yr:'Act No. 4 of 1882',      sec:137, desc:'Defines and amends the law relating to transfer of property' },
+  { id:22, cat:'property',       title:'Registration Act, 1908',              yr:'Act No. 16 of 1908',     sec:93,  desc:'Registration of documents relating to immovable property' },
+  { id:23, cat:'property',       title:'Indian Stamp Act, 1899',              yr:'Act No. 2 of 1899',      sec:78,  desc:'Duties chargeable on instruments including property deeds' },
+  { id:24, cat:'consumer',       title:'Consumer Protection Act, 2019',       yr:'Act No. 35 of 2019',     sec:107, desc:'Protection of consumers from unfair trade practices' },
+  { id:25, cat:'revenue',        title:'Land Acquisition Act, 2013',          yr:'Act No. 30 of 2013',     sec:114, desc:'Fair compensation for acquisition of land for public purposes' },
+  { id:26, cat:'arbitration',    title:'Arbitration & Conciliation Act, 1996',yr:'Act No. 26 of 1996',     sec:86,  desc:'Law relating to domestic and international commercial arbitration' }
+];
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let downloads = [];
+let uploadedFiles = [];
+let searchHistory = [];
+let currentFilter = null;
+
+try { downloads = JSON.parse(localStorage.getItem('lex-pro-dl') || '[]'); } catch(e){}
+try { searchHistory = JSON.parse(localStorage.getItem('lex-pro-sh') || '[]'); } catch(e){}
+try { uploadedFiles = JSON.parse(localStorage.getItem('lex-pro-uf') || '[]'); } catch(e){}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+function init() {
+  buildSidebarCats();
+  renderRecent();
+  updateStats();
+}
+
+function buildSidebarCats() {
+  const el = document.getElementById('sidebar-cats');
+  el.innerHTML = CATS.map(c => `
+    <div class="cat-dot" onclick="filterCat('${c.id}')">
+      <div class="dot-circle"><span style="background:${c.dot}"></span></div>
+      <div class="cat-dot-label">${c.label}</div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════
+const PAGE_TITLES = {
+  dashboard:'Dashboard', aisearch:'AI Citation Search',
+  citations:'Citations Library', ebooks:'eBooks',
+  bareacts:'Bare Acts', myfiles:'My Downloads', upload:'Upload Files'
+};
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.getElementById('page-title').textContent = PAGE_TITLES[id] || id;
+  const items = document.querySelectorAll('.nav-item');
+  const order = ['dashboard','aisearch','citations','ebooks','bareacts','myfiles','upload'];
+  const idx = order.indexOf(id);
+  if (idx >= 0 && items[idx]) items[idx].classList.add('active');
+
+  if (id === 'citations') renderCitations();
+  if (id === 'ebooks')    renderEbooks();
+  if (id === 'bareacts')  renderActs();
+  if (id === 'myfiles')   renderDownloads();
+  if (id === 'aisearch')  renderSearchHistory();
+  if (id === 'upload')    renderUploads();
+}
+
+function filterCat(cat) {
+  currentFilter = cat;
+  showPage('citations');
+  setTimeout(() => renderCitations(cat), 30);
+}
+
+// ══════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════
+function getCatColor(catId) {
+  return CATS.find(c => c.id === catId)?.color || '#555';
+}
+function getCatDot(catId) {
+  return CATS.find(c => c.id === catId)?.dot || '#888';
+}
+function getCatLabel(catId) {
+  return CATS.find(c => c.id === catId)?.label || catId;
+}
+function catTag(catId) {
+  const c = CATS.find(x => x.id === catId);
+  if (!c) return '';
+  return `<span class="cat-tag" style="background:${c.color}22;color:${c.dot};border:1px solid ${c.color}55">${c.label}</span>`;
+}
+
+function buildFilters(containerId, items, getField, onFilter, current) {
+  const cats = [...new Set(items.map(getField))];
+  const el = document.getElementById(containerId);
+  el.innerHTML = `<span class="chip ${!current ? 'active' : ''}" onclick="${onFilter}(null)">All</span>` +
+    cats.map(c => `<span class="chip ${current===c ? 'active' : ''}" onclick="${onFilter}('${c}')">${getCatLabel(c)}</span>`).join('');
+}
+
+// ══════════════════════════════════════════
+// RENDER CITATIONS
+// ══════════════════════════════════════════
+function citCard(c) {
+  return `<div class="c-card" data-cat="${c.cat}" onclick="openCitation(${c.id})">
+    <div class="c-top">
+      <div class="c-title">${c.title} ${catTag(c.cat)}</div>
+      <div class="c-btns">
+        <button class="btn-xs btn-xs-view" onclick="event.stopPropagation();openCitation(${c.id})">View</button>
+        <button class="btn-xs btn-xs-save" onclick="event.stopPropagation();saveDL('citation',${c.id})">⬇ Save</button>
+      </div>
+    </div>
+    <div class="c-meta">
+      <span class="c-meta-item"><strong>${c.court}</strong></span>
+      <span class="c-meta-item">📅 <strong>${c.year}</strong></span>
+      <span class="c-meta-item">⚖ ${c.section}</span>
+      <span class="c-meta-item court-badge">${c.source}</span>
+    </div>
+    <div class="c-excerpt">${c.excerpt}</div>
+  </div>`;
+}
+
+function renderCitations(filter) {
+  if (filter !== undefined) currentFilter = filter;
+  buildFilters('cit-filters', CITATIONS, c => c.cat, 'renderCitations', currentFilter);
+  const list = currentFilter ? CITATIONS.filter(c => c.cat === currentFilter) : CITATIONS;
+  const el = document.getElementById('citations-list');
+  document.getElementById('citations-count').textContent = `${list.length} citations`;
+  el.innerHTML = list.length ? list.map(citCard).join('') : `<div class="empty"><div class="empty-icon">📜</div><p>No citations in this category yet.</p></div>`;
+}
+
+function renderRecent() {
+  document.getElementById('recent-list').innerHTML = CITATIONS.slice(0, 6).map(citCard).join('');
+}
+
+// ══════════════════════════════════════════
+// RENDER EBOOKS
+// ══════════════════════════════════════════
+let ebFilter = null;
+function renderEbooks(filter) {
+  if (filter !== undefined) ebFilter = filter;
+  buildFilters('eb-filters', EBOOKS, e => e.cat, 'renderEbooks', ebFilter);
+  const list = ebFilter ? EBOOKS.filter(e => e.cat === ebFilter) : EBOOKS;
+  document.getElementById('ebooks-grid').innerHTML = list.map(e => `
+    <div class="eb-card" onclick="openEbook(${e.id})">
+      <div class="eb-spine" style="background:${e.color}">${e.icon}</div>
+      <div class="eb-info">
+        <div class="eb-title">${e.title}</div>
+        <div class="eb-meta">${e.author}<br>${e.cat.toUpperCase()} · ${e.pages} pp · ${e.year}</div>
+        <button class="eb-dl" onclick="event.stopPropagation();saveDL('ebook',${e.id})">⬇ Download PDF</button>
+      </div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════
+// RENDER BARE ACTS
+// ══════════════════════════════════════════
+let actFilter = null;
+function renderActs(filter) {
+  if (filter !== undefined) actFilter = filter;
+  buildFilters('act-filters', BARE_ACTS, a => a.cat, 'renderActs', actFilter);
+  const list = actFilter ? BARE_ACTS.filter(a => a.cat === actFilter) : BARE_ACTS;
+  document.getElementById('acts-grid').innerHTML = list.map(a => `
+    <div class="act-card">
+      <div class="act-name">${a.title}</div>
+      <div class="act-year-tag">${a.yr} · ${a.sec} Sections ${catTag(a.cat)}</div>
+      <div class="act-desc">${a.desc}</div>
+      <div class="act-footer">
+        <div class="act-btn act-btn-read" onclick="openAct(${a.id})">Read Online</div>
+        <div class="act-btn act-btn-dl" onclick="saveDL('act',${a.id})">Download</div>
+      </div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════
+// DOWNLOADS
+// ══════════════════════════════════════════
+function saveDL(type, id) {
+  let title = '', meta = '';
+  if (type === 'citation') { const c = CITATIONS.find(x => x.id === id); title = c?.title; meta = c?.court + ' · ' + c?.year; }
+  if (type === 'ebook')    { const e = EBOOKS.find(x => x.id === id); title = e?.title; meta = e?.author; }
+  if (type === 'act')      { const a = BARE_ACTS.find(x => x.id === id); title = a?.title; meta = a?.yr; }
+  if (!title) return;
+  if (downloads.find(d => d.title === title)) { showToast('Already in your downloads'); return; }
+  const rec = { title, type, meta, date: new Date().toLocaleDateString('en-IN') };
+  downloads.push(rec);
+  try { localStorage.setItem('lex-pro-dl', JSON.stringify(downloads)); } catch(e){}
+  updateStats();
+  showToast(`Saved: ${title.substring(0,45)}…`);
+
+  // Simulate actual file download
+  const blob = new Blob([`LexAdvocate Pro — Saved Document\n${'─'.repeat(50)}\nTitle: ${title}\nType:  ${type.toUpperCase()}\nMeta:  ${meta}\nSaved: ${new Date().toLocaleString('en-IN')}\n${'─'.repeat(50)}\nAccess full text via your licensed legal database portal.\nThis file is an offline reference record.\n`], {type:'text/plain'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = title.replace(/[^\w\s]/g,'').substring(0,60).trim() + '.txt'; a.click();
+  URL.revokeObjectURL(a.href);
+  closeModal();
+}
+
+function renderDownloads() {
+  const el = document.getElementById('dl-content');
+  if (!downloads.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">💾</div><p>No downloads yet.<br>Save any citation, ebook or bare act to access it here.</p></div>`;
+    return;
+  }
+  el.innerHTML = `<table class="dl-table">
+    <thead><tr><th>Title</th><th>Type</th><th>Details</th><th>Date</th><th></th></tr></thead>
+    <tbody>${downloads.map((d,i) => `<tr>
+      <td>${d.title}</td>
+      <td><span class="cat-tag" style="background:var(--gold-dim);color:var(--gold2);border:1px solid var(--gold)">${d.type}</span></td>
+      <td style="font-size:12px;color:var(--text3)">${d.meta}</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:10px">${d.date}</td>
+      <td><button class="btn-xs btn-xs-view" onclick="removeDL(${i})">✕ Remove</button></td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+}
+
+function removeDL(i) { downloads.splice(i,1); try{localStorage.setItem('lex-pro-dl',JSON.stringify(downloads));}catch(e){} renderDownloads(); updateStats(); }
+function clearDownloads() { downloads=[]; try{localStorage.removeItem('lex-pro-dl');}catch(e){} renderDownloads(); updateStats(); showToast('Downloads cleared'); }
+
+// ══════════════════════════════════════════
+// UPLOAD
+// ══════════════════════════════════════════
+function dragOver(e) { e.preventDefault(); document.getElementById('drop-zone').classList.add('drag-over'); }
+function dragLeave(e) { document.getElementById('drop-zone').classList.remove('drag-over'); }
+function dropFiles(e) { e.preventDefault(); dragLeave(e); handleFiles(e.dataTransfer.files); }
+function handleFiles(files) {
+  Array.from(files).forEach(f => {
+    if (!uploadedFiles.find(u => u.name === f.name)) {
+      uploadedFiles.push({ name:f.name, size:(f.size/1024).toFixed(1)+'KB', date:new Date().toLocaleDateString('en-IN') });
+    }
+  });
+  try{localStorage.setItem('lex-pro-uf',JSON.stringify(uploadedFiles));}catch(e){}
+  renderUploads();
+  showToast(`${files.length} file(s) uploaded & indexed`);
+}
+function renderUploads() {
+  const el = document.getElementById('upload-list');
+  if (!uploadedFiles.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">📂</div><p>No files uploaded yet.</p></div>`;
+    return;
+  }
+  el.innerHTML = uploadedFiles.map((f,i) => `
+    <div class="c-card" data-cat="civil">
+      <div class="c-top">
+        <div class="c-title">📄 ${f.name}</div>
+        <div class="c-btns">
+          <button class="btn-xs btn-xs-view" onclick="removeUpload(${i})">✕</button>
+        </div>
+      </div>
+      <div class="c-meta">
+        <span class="c-meta-item">Size: <strong>${f.size}</strong></span>
+        <span class="c-meta-item">Uploaded: <strong>${f.date}</strong></span>
+        <span class="c-meta-item" style="color:#2ecc71">✓ Indexed locally</span>
+      </div>
+    </div>`).join('');
+}
+function removeUpload(i) { uploadedFiles.splice(i,1); try{localStorage.setItem('lex-pro-uf',JSON.stringify(uploadedFiles));}catch(e){} renderUploads(); }
+
+// ══════════════════════════════════════════
+// AI SEARCH
+// ══════════════════════════════════════════
+const SRC_LABELS = { all:'All Sources (Indian Kanoon · SCC Online · Manupatra)', indiankanoon:'Indian Kanoon', scc:'SCC Online', manupatra:'Manupatra' };
+
+async function runAI(ctx) {
+  const q   = document.getElementById(`q-${ctx}`).value.trim();
+  const src = document.getElementById(`src-${ctx}`).value;
+  const cat = document.getElementById(`cat-${ctx}`).value;
+  if (!q) { showToast('Please enter a search query'); return; }
+
+  const btn  = document.getElementById(`btn-${ctx}`);
+  const resEl = document.getElementById(`res-${ctx}`);
+  const bodyEl = document.getElementById(`res-${ctx}-body`);
+  const labelEl = document.getElementById(`res-${ctx}-label`);
+
+  btn.disabled = true; btn.textContent = '…';
+  resEl.classList.add('show');
+  bodyEl.innerHTML = `<div class="loading-bar"><div class="loading-bar-inner"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3)">Fetching from ${SRC_LABELS[src]}…</span>`;
+  labelEl.textContent = `Searching: "${q.substring(0,50)}" — ${SRC_LABELS[src]}`;
+
+  const catInstruction = cat ? `Focus specifically on ${cat.toUpperCase()} law cases.` : 'Cover all relevant areas of law.';
+
+  const prompt = `You are an expert Indian legal research assistant specialising in case law research. A practicing advocate wants you to retrieve and analyse relevant judgments.
+
+Search Query: "${q}"
+Source(s): ${SRC_LABELS[src]}
+${cat ? 'Legal Category: ' + cat.toUpperCase() : ''}
+
+${catInstruction}
+
+Please provide a structured response with:
+
+**RELEVANT CITATIONS:**
+List 4-6 most relevant Indian case citations with:
+- Full case name (e.g. *ABC v. State of XYZ*)
+- Court, year, bench strength
+- Case citation number if applicable
+- Key ratio decidendi (2-3 sentences)
+- Relevance to the query
+
+**KEY LEGAL PRINCIPLES:**
+Summarise the overarching legal principles from these cases.
+
+**APPLICABLE STATUTORY PROVISIONS:**
+List relevant sections from Indian statutes.
+
+**RESEARCH NOTE:**
+Brief note on the current legal position and any recent developments.
+
+Format case names in italics. Be precise, cite accurately, and focus on Indian law — Supreme Court, High Courts, and relevant Tribunals.`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const data = await resp.json();
+    let text = (data.content || []).map(i => i.text||'').join('') || 'No results returned.';
+
+    // Format
+    text = text
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*([^*\n]+)\*/g, '<em class="case-name">$1</em>')
+      .replace(/\n\n/g, '</p><p style="margin-top:14px">')
+      .replace(/\n/g, '<br>');
+
+    bodyEl.innerHTML = `<p>${text}</p>`;
+
+    // Save to history
+    const entry = { query:q, source:SRC_LABELS[src], cat: cat||'All', date: new Date().toLocaleString('en-IN'), result: text };
+    searchHistory.unshift(entry);
+    if (searchHistory.length > 20) searchHistory.pop();
+    try{localStorage.setItem('lex-pro-sh',JSON.stringify(searchHistory));}catch(e){}
+
+  } catch(err) {
+    bodyEl.innerHTML = `<span style="color:var(--danger)">⚠ Error fetching results. Please check your connection.<br><small style="opacity:0.5">${err.message}</small></span>`;
+  }
+  btn.disabled = false; btn.textContent = ctx === 'dash' ? 'Fetch →' : 'Search →';
+}
+
+function saveAI(ctx) {
+  const q = document.getElementById(`q-${ctx}`).value.trim();
+  if (!q) return;
+  const rec = { title:'AI Search: ' + q.substring(0,60), type:'AI Result', meta: document.getElementById(`src-${ctx}`).value, date: new Date().toLocaleDateString('en-IN') };
+  if (downloads.find(d => d.title === rec.title)) { showToast('Already saved'); return; }
+  downloads.push(rec);
+  try{localStorage.setItem('lex-pro-dl',JSON.stringify(downloads));}catch(e){}
+  updateStats(); showToast('AI search results saved to My Downloads');
+}
+
+function renderSearchHistory() {
+  const el = document.getElementById('search-history-list');
+  if (!searchHistory.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">🔍</div><p>No searches yet. Use the AI panel above.</p></div>`;
+    return;
+  }
+  el.innerHTML = searchHistory.map((h,i) => `
+    <div class="c-card" data-cat="arbitration">
+      <div class="c-top">
+        <div class="c-title">🔍 ${h.query}</div>
+        <div class="c-btns">
+          <button class="btn-xs btn-xs-view" onclick="removeHistory(${i})">✕</button>
+        </div>
+      </div>
+      <div class="c-meta">
+        <span class="c-meta-item">Source: <strong>${h.source}</strong></span>
+        <span class="c-meta-item">📅 ${h.date}</span>
+        ${h.cat !== 'All' ? `<span class="c-meta-item">Category: <strong>${h.cat}</strong></span>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+function removeHistory(i) { searchHistory.splice(i,1); try{localStorage.setItem('lex-pro-sh',JSON.stringify(searchHistory));}catch(e){} renderSearchHistory(); }
+function clearHistory() { searchHistory=[]; try{localStorage.removeItem('lex-pro-sh');}catch(e){} renderSearchHistory(); showToast('Search history cleared'); }
+
+// ══════════════════════════════════════════
+// GLOBAL SEARCH
+// ══════════════════════════════════════════
+function globalSearch() {
+  const q = document.getElementById('global-search').value.trim().toLowerCase();
+  if (!q) return;
+  currentFilter = null;
+  showPage('citations');
+  setTimeout(() => {
+    const results = CITATIONS.filter(c =>
+      c.title.toLowerCase().includes(q) ||
+      c.excerpt.toLowerCase().includes(q) ||
+      c.section.toLowerCase().includes(q) ||
+      c.court.toLowerCase().includes(q) ||
+      c.cat.toLowerCase().includes(q) ||
+      c.full.toLowerCase().includes(q) ||
+      String(c.year).includes(q)
+    );
+    document.getElementById('cit-filters').innerHTML = `<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3)">Results for "<strong style="color:var(--gold2)">${q}</strong>" — ${results.length} citation${results.length!==1?'s':''} found &nbsp;<span class="chip active" onclick="renderCitations(null)">✕ Clear</span></span>`;
+    document.getElementById('citations-count').textContent = '';
+    document.getElementById('citations-list').innerHTML = results.length
+      ? results.map(citCard).join('')
+      : `<div class="empty"><div class="empty-icon">🔍</div><p>No citations found for "<strong>${q}</strong>".<br>Try the AI Search for comprehensive results.</p></div>`;
+  }, 40);
+}
+
+// ══════════════════════════════════════════
+// MODALS
+// ══════════════════════════════════════════
+function openCitation(id) {
+  const c = CITATIONS.find(x => x.id === id); if(!c) return;
+  document.getElementById('m-title').innerHTML = `${c.title}`;
+  document.getElementById('m-meta').innerHTML = [
+    `<span>⚖ ${c.court}</span>`,
+    `<span>📅 ${c.year}</span>`,
+    `<span>📋 ${c.section}</span>`,
+    `<span>${c.bench}</span>`,
+    `<span class="court-badge">${c.source}</span>`,
+    catTag(c.cat)
+  ].join('');
+  document.getElementById('m-body').innerHTML = `
+    <h4>Full Judgment Summary</h4>
+    <p>${c.full}</p>
+    <h4>Key Section / Provision</h4>
+    <p>${c.section}</p>
+    <h4>Legal Significance</h4>
+    <p>${c.excerpt}</p>`;
+  document.getElementById('m-dl-btn').onclick = () => saveDL('citation', id);
+  document.getElementById('modal').classList.add('show');
+}
+
+function openEbook(id) {
+  const e = EBOOKS.find(x => x.id === id); if(!e) return;
+  document.getElementById('m-title').textContent = e.title;
+  document.getElementById('m-meta').innerHTML = `<span>${e.author}</span><span>${e.pages} pages</span><span>${e.year}</span>${catTag(e.cat)}`;
+  document.getElementById('m-body').innerHTML = `
+    <h4>About This Book</h4>
+    <p>This is a standard reference text widely used in Indian legal practice. The edition covers all amendments up to ${e.year} with case law annotations and commentary.</p>
+    <h4>Contents</h4>
+    <p>Statutory text · Commentary · Case Law Annotations · Index · Appendices</p>`;
+  document.getElementById('m-dl-btn').onclick = () => saveDL('ebook', id);
+  document.getElementById('modal').classList.add('show');
+}
+
+function openAct(id) {
+  const a = BARE_ACTS.find(x => x.id === id); if(!a) return;
+  document.getElementById('m-title').textContent = a.title;
+  document.getElementById('m-meta').innerHTML = `<span>${a.yr}</span><span>${a.sec} Sections</span>${catTag(a.cat)}`;
+  document.getElementById('m-body').innerHTML = `
+    <h4>About This Act</h4>
+    <p>${a.desc}</p>
+    <h4>Scope</h4>
+    <p>This bare act text is the complete statutory text as amended to date. Download for offline reference with section-wise navigation.</p>`;
+  document.getElementById('m-dl-btn').onclick = () => saveDL('act', id);
+  document.getElementById('modal').classList.add('show');
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('show'); }
+
+// ══════════════════════════════════════════
+// STATS
+// ══════════════════════════════════════════
+function updateStats() {
+  document.getElementById('s-downloads').textContent = downloads.length;
+  document.getElementById('s-citations').textContent = CITATIONS.length + uploadedFiles.length;
+}
+
+// ══════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// ══════════════════════════════════════════
+// KEYBOARD SHORTCUTS
+// ══════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === '/') {
+    e.preventDefault();
+    document.getElementById('global-search').focus();
+  }
+  if (e.key === 'Escape') closeModal();
+});
+
+// ══════════════════════════════════════════
+// START
+// ══════════════════════════════════════════
+init();
+</script>
+</body>
+</html>
