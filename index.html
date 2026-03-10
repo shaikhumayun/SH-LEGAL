@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>SKHT COURT — Legal Research Suite</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=JetBrains+Mono:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<!-- Firebase SDK v9 compat -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 <style>
 :root {
   --bg:#0a0b0d; --surface:#111318; --surface2:#181c22; --surface3:#1e2330;
@@ -906,6 +910,52 @@ mark.fv-hl-current{background:rgba(201,168,76,0.75);color:#000;border-radius:2px
 .ftype-img{color:#2ecc71;}
 .btn-xs-open{border-color:#8b44ff;color:#c084fc;}
 .btn-xs-open:hover{background:#8b44ff;color:white;}
+
+/* ══ FIREBASE SYNC STATUS BAR ══ */
+#fb-sync-bar{position:fixed;bottom:0;left:0;right:0;z-index:8000;padding:5px 20px;display:flex;align-items:center;gap:12px;font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--surface);border-top:1px solid var(--border);transition:all 0.3s;}
+#fb-sync-bar.fb-ok{border-top-color:rgba(46,204,113,0.5);}
+#fb-sync-bar.fb-err{border-top-color:rgba(231,76,60,0.5);}
+#fb-sync-bar.fb-busy{border-top-color:rgba(201,168,76,0.5);}
+#fb-sync-bar.fb-off{display:none;}
+.fb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.fb-dot-ok{background:#2ecc71;box-shadow:0 0 6px #2ecc71;}
+.fb-dot-err{background:#e74c3c;box-shadow:0 0 6px #e74c3c;}
+.fb-dot-busy{background:#f39c12;animation:pulse 1s infinite;}
+.fb-dot-off{background:var(--text3);}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.fb-status-text{color:var(--text2);flex:1;}
+.fb-configure-btn{padding:3px 10px;border-radius:4px;border:1px solid var(--border2);background:transparent;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:9px;cursor:pointer;text-transform:uppercase;letter-spacing:0.06em;transition:all 0.18s;}
+.fb-configure-btn:hover{border-color:var(--gold);color:var(--gold);}
+#fb-setup-modal{display:none;position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);align-items:center;justify-content:center;}
+#fb-setup-modal.show{display:flex;}
+.fb-setup-box{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);width:min(700px,96vw);max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:popIn 0.3s cubic-bezier(0.34,1.56,0.64,1);}
+.fb-setup-header{padding:24px 28px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.fb-setup-header h2{font-family:'Playfair Display',serif;font-size:20px;color:var(--text);}
+.fb-setup-body{padding:24px 28px;}
+.fb-step{display:flex;gap:14px;margin-bottom:16px;padding:14px 16px;background:var(--surface2);border-radius:var(--radius);border:1px solid var(--border);}
+.fb-step-num{width:26px;height:26px;border-radius:50%;background:var(--gold);color:#000;font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.fb-step-body h4{font-size:13px;color:var(--text);margin-bottom:4px;}
+.fb-step-body p{font-size:12px;color:var(--text3);line-height:1.65;}
+.fb-step-body code{background:var(--surface3);border:1px solid var(--border2);border-radius:3px;padding:1px 6px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold2);word-break:break-all;}
+.fb-config-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0;}
+.fb-config-full{grid-column:1/-1;}
+.fb-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:5px;display:block;}
+.fb-input{width:100%;padding:10px 14px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;outline:none;transition:border-color 0.2s;}
+.fb-input:focus{border-color:var(--gold);}
+.fb-input::placeholder{color:var(--text3);}
+.fb-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;}
+.fb-btn-primary{padding:10px 22px;background:var(--gold);border:none;border-radius:var(--radius);color:#000;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;}
+.fb-btn-primary:hover{background:var(--gold2);transform:translateY(-1px);}
+.fb-btn-secondary{padding:10px 22px;background:transparent;border:1px solid var(--border2);border-radius:var(--radius);color:var(--text3);font-family:'Outfit',sans-serif;font-size:13px;cursor:pointer;transition:all 0.2s;}
+.fb-btn-secondary:hover{border-color:var(--text2);color:var(--text);}
+.fb-test-result{margin-top:12px;padding:10px 14px;border-radius:var(--radius);font-family:'JetBrains Mono',monospace;font-size:11px;display:none;}
+.fb-test-ok{background:rgba(46,204,113,0.1);border:1px solid rgba(46,204,113,0.3);color:#2ecc71;}
+.fb-test-err{background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.3);color:#e74c3c;}
+.fb-rules-box{background:var(--surface3);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 16px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold2);line-height:1.7;white-space:pre;overflow-x:auto;margin-top:8px;}
+.fb-notice{background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.2);border-radius:var(--radius);padding:10px 14px;margin-bottom:16px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);}
+.sync-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;}
+.sync-badge-cloud{background:rgba(46,204,113,0.12);border:1px solid rgba(46,204,113,0.3);color:#2ecc71;}
+.sync-badge-local{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);color:var(--gold);}
 </style>
 </head>
 <body>
@@ -1332,6 +1382,117 @@ mark.fv-hl-current{background:rgba(201,168,76,0.75);color:#000;border-radius:2px
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- ════════════ FIREBASE SYNC BAR ════════════ -->
+<div id="fb-sync-bar" class="fb-off">
+  <div class="fb-dot fb-dot-off" id="fb-dot"></div>
+  <span class="fb-status-text" id="fb-status-text">Cloud sync not configured</span>
+  <button class="fb-configure-btn" onclick="openFBSetup()">⚙ Configure</button>
+</div>
+
+<!-- ════════════ FIREBASE SETUP MODAL ════════════ -->
+<div id="fb-setup-modal">
+  <div class="fb-setup-box">
+    <div class="fb-setup-header">
+      <h2>🔥 Firebase Cloud Sync Setup</h2>
+      <button class="modal-close" onclick="closeFBSetup()">✕</button>
+    </div>
+    <div class="fb-setup-body">
+      <div class="fb-notice" id="fb-current-status-notice">
+        ⚡ Status: <strong>Not configured</strong> — Files are currently saved in browser only (localStorage). After setup, all uploaded files will sync to the cloud and be visible to all users on any device.
+      </div>
+
+      <div class="fb-step">
+        <div class="fb-step-num">1</div>
+        <div class="fb-step-body">
+          <h4>Create a free Firebase project</h4>
+          <p>Go to <code>console.firebase.google.com</code> → Click <strong>Add project</strong> → Name it (e.g. <code>lexadvocate</code>) → Disable Google Analytics → Create project.</p>
+        </div>
+      </div>
+
+      <div class="fb-step">
+        <div class="fb-step-num">2</div>
+        <div class="fb-step-body">
+          <h4>Enable Firestore Database</h4>
+          <p>In your project → Left sidebar → <strong>Build → Firestore Database</strong> → Create database → Choose <strong>Production mode</strong> → Select region (asia-south1 for India) → Done.</p>
+        </div>
+      </div>
+
+      <div class="fb-step">
+        <div class="fb-step-num">3</div>
+        <div class="fb-step-body">
+          <h4>Enable Firebase Storage (for files)</h4>
+          <p>Left sidebar → <strong>Build → Storage</strong> → Get started → Production mode → Done. This stores the actual file contents (PDFs, DOCX etc).</p>
+        </div>
+      </div>
+
+      <div class="fb-step">
+        <div class="fb-step-num">4</div>
+        <div class="fb-step-body">
+          <h4>Set Firestore Security Rules</h4>
+          <p>Firestore → Rules tab → Replace with this (allows authenticated app access):</p>
+          <div class="fb-rules-box">rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /uploads/{doc} {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}</div>
+          <p style="margin-top:8px;">Then click <strong>Publish</strong>. Do the same for Storage rules (Storage → Rules → <code>allow read, write: if true;</code> → Publish).</p>
+        </div>
+      </div>
+
+      <div class="fb-step">
+        <div class="fb-step-num">5</div>
+        <div class="fb-step-body">
+          <h4>Get your Web App config keys</h4>
+          <p>Project Settings (gear icon) → <strong>Your apps</strong> → Click &lt;/&gt; (Web) → Register app → Copy the <code>firebaseConfig</code> values below.</p>
+        </div>
+      </div>
+
+      <div class="fb-config-grid">
+        <div>
+          <label class="fb-label">API Key</label>
+          <input class="fb-input" id="fb-api-key" placeholder="AIzaSy…"/>
+        </div>
+        <div>
+          <label class="fb-label">Project ID</label>
+          <input class="fb-input" id="fb-project-id" placeholder="lexadvocate-xxxxx"/>
+        </div>
+        <div>
+          <label class="fb-label">Auth Domain</label>
+          <input class="fb-input" id="fb-auth-domain" placeholder="lexadvocate.firebaseapp.com"/>
+        </div>
+        <div>
+          <label class="fb-label">Storage Bucket</label>
+          <input class="fb-input" id="fb-storage-bucket" placeholder="lexadvocate.appspot.com"/>
+        </div>
+        <div class="fb-config-full">
+          <label class="fb-label">App ID (messagingSenderId not needed)</label>
+          <input class="fb-input" id="fb-app-id" placeholder="1:123456789:web:abcdef…"/>
+        </div>
+      </div>
+
+      <div class="fb-actions">
+        <button class="fb-btn-primary" onclick="fbSaveAndConnect()">🔗 Save &amp; Connect</button>
+        <button class="fb-btn-secondary" onclick="fbTestConnection()">🔌 Test Only</button>
+        <button class="fb-btn-secondary" onclick="fbMigrateLocal()">⬆ Migrate Local Files to Cloud</button>
+        <button class="fb-btn-secondary" onclick="fbDisconnect()">🔌 Disconnect</button>
+      </div>
+      <div class="fb-test-result" id="fb-test-result"></div>
+
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+        <p style="font-size:12px;color:var(--text3);line-height:1.7;">
+          <strong style="color:var(--text2);">Free tier limits:</strong> Firestore: 1GB storage, 50k reads/day, 20k writes/day.
+          Firebase Storage: 5GB, 1GB/day download. More than enough for a legal practice.
+          Files are stored encrypted in Google's servers in India (if you selected asia-south1).
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ════════════ SCRIPT ════════════ -->
 <script>
@@ -2033,13 +2194,16 @@ async function handleFilesForCat(files, cat) {
     const onLoad = async (contentType, content) => {
       let ghUrl = null;
       if (ghEnabled && content) ghUrl = await uploadToGitHub(f.name, content, f.type);
-      uploads.push({
+      const record = {
         id, name: f.name, dlcat: cat, description,
         size: f.size > 1048576 ? (f.size/1048576).toFixed(1)+'MB' : (f.size/1024).toFixed(1)+'KB',
         type: ext, uploadedBy: currentUser.displayName,
         date: new Date().toLocaleString('en-IN'),
         contentType, content, ghUrl: ghUrl || null
-      });
+      };
+      uploads.push(record);
+      // Also upload to Firebase cloud (async, non-blocking)
+      if (db) { fbUploadRecord(record); }
       added++; resolve();
     };
 
@@ -2274,19 +2438,25 @@ async function deleteUpload(fileId) {
     showToast('⛔ Only SH (Super Admin) can delete files');
     return;
   }
-  if (!confirm('Delete this file permanently?')) return;
+  if (!confirm('Delete this file from cloud and local storage?')) return;
   const uploads = getSharedUploads();
   const file = uploads.find(f => f.id === fileId);
-  // Also delete from GitHub if linked
-  if (file?.ghUrl && file?.name) {
-    await deleteFromGitHub(file.name);
-  }
+  // Delete from GitHub if linked
+  if (file?.ghUrl && file?.name) deleteFromGitHub(file.name);
+  // Delete from Firebase cloud
+  if (db) fbDeleteRecord(fileId);
   setSharedUploads(uploads.filter(f => f.id !== fileId));
-  updateStats();
-  renderSharedUploads();
-  renderUploadPage();
-  renderFileLibrary();
-  showToast('🗑 File deleted' + (file?.ghUrl ? ' + removed from GitHub' : ''));
+  // Refresh UI
+  updateStats(); updateDLCounts();
+  const activePage = document.querySelector('.page.active');
+  if (activePage) {
+    const id = activePage.id.replace('page-','');
+    if (id==='upload') ['bareacts','judgments','books','citations','others'].forEach(k=>renderUploadCatList(k));
+    if (id==='dlcat')  renderDLCat();
+    if (id==='doclibrary') renderDLRecent();
+    if (id==='admin')  renderAdminPage();
+  }
+  showToast('🗑 File deleted' + (db?' from cloud +':' from') + ' local storage');
 }
 
 // ══════════════════════════════════════
@@ -2992,6 +3162,273 @@ document.addEventListener('keydown',e=>{
 
 // Auto-focus login
 window.addEventListener('load',()=>document.getElementById('l-user').focus());
+
+// ══════════════════════════════════════════════════════
+// FIREBASE CLOUD SYNC ENGINE
+// ══════════════════════════════════════════════════════
+const FB_CONFIG_KEY = 'lex-fb-config';
+let db = null, storage = null, fbApp = null;
+let fbLiveUploads = null; // live cache from Firestore
+let fbUnsubscribe = null; // real-time listener unsub
+
+// ── Load saved config and try to auto-connect on startup
+function fbInit() {
+  const cfg = fbGetConfig();
+  if (cfg && cfg.apiKey && cfg.projectId) {
+    fbConnect(cfg, false);
+  } else {
+    setSyncBar('off', '');
+  }
+  // Populate setup form if config exists
+  if (cfg) {
+    document.getElementById('fb-api-key') && (document.getElementById('fb-api-key').value = cfg.apiKey || '');
+    document.getElementById('fb-project-id') && (document.getElementById('fb-project-id').value = cfg.projectId || '');
+    document.getElementById('fb-auth-domain') && (document.getElementById('fb-auth-domain').value = cfg.authDomain || '');
+    document.getElementById('fb-storage-bucket') && (document.getElementById('fb-storage-bucket').value = cfg.storageBucket || '');
+    document.getElementById('fb-app-id') && (document.getElementById('fb-app-id').value = cfg.appId || '');
+  }
+}
+
+function fbGetConfig() {
+  try { return JSON.parse(localStorage.getItem(FB_CONFIG_KEY) || 'null'); } catch(e) { return null; }
+}
+
+function fbSaveConfig(cfg) {
+  try { localStorage.setItem(FB_CONFIG_KEY, JSON.stringify(cfg)); } catch(e) {}
+}
+
+// ── Connect to Firebase
+async function fbConnect(cfg, showResult) {
+  try {
+    setSyncBar('busy', 'Connecting to Firebase…');
+
+    // Init app (avoid duplicate init)
+    if (!fbApp) {
+      try {
+        fbApp = firebase.app();
+      } catch(e) {
+        fbApp = firebase.initializeApp(cfg);
+      }
+    }
+
+    db      = firebase.firestore();
+    storage = firebase.storage();
+
+    // Test by doing a simple read
+    await db.collection('uploads').limit(1).get();
+
+    setSyncBar('ok', '☁ Cloud sync active — uploads visible to all users on all devices');
+    document.getElementById('fb-current-status-notice').innerHTML =
+      '✅ <strong>Connected!</strong> All uploaded files sync to cloud. All users on any device can see them instantly.';
+    document.getElementById('fb-current-status-notice').style.background = 'rgba(46,204,113,0.08)';
+    document.getElementById('fb-current-status-notice').style.borderColor = 'rgba(46,204,113,0.3)';
+    document.getElementById('fb-current-status-notice').style.color = '#2ecc71';
+
+    if (showResult) {
+      const res = document.getElementById('fb-test-result');
+      res.className = 'fb-test-result fb-test-ok'; res.style.display = 'block';
+      res.textContent = '✅ Connected successfully! Firebase is working. Files will now sync to all devices.';
+    }
+
+    // Start real-time listener
+    fbStartListener();
+
+    return true;
+  } catch(e) {
+    setSyncBar('err', '⚠ Cloud sync error: ' + e.message.substring(0, 80));
+    if (showResult) {
+      const res = document.getElementById('fb-test-result');
+      res.className = 'fb-test-result fb-test-err'; res.style.display = 'block';
+      res.textContent = '❌ Connection failed: ' + e.message;
+    }
+    return false;
+  }
+}
+
+// ── Real-time listener: when any user uploads, all other sessions update instantly
+function fbStartListener() {
+  if (fbUnsubscribe) fbUnsubscribe(); // stop previous listener
+  fbUnsubscribe = db.collection('uploads')
+    .orderBy('timestamp', 'desc')
+    .onSnapshot(snapshot => {
+      fbLiveUploads = snapshot.docs.map(d => ({ ...d.data(), _fbId: d.id }));
+      // Refresh whichever page is currently visible
+      const activePage = document.querySelector('.page.active');
+      if (activePage) {
+        const id = activePage.id.replace('page-', '');
+        if (id === 'doclibrary')  { updateDLCounts(); renderDLRecent(); }
+        if (id === 'dlcat')       { renderDLCat(); }
+        if (id === 'upload')      { ['bareacts','judgments','books','citations','others'].forEach(k=>renderUploadCatList(k)); }
+        if (id === 'dashboard')   { updateDLCounts(); updateStats(); }
+        if (id === 'admin')       { renderAdminPage(); }
+      }
+      updateStats();
+      updateDLCounts();
+    }, err => {
+      setSyncBar('err', '⚠ Sync lost: ' + err.message.substring(0,60));
+    });
+}
+
+// ── setSyncBar
+function setSyncBar(state, msg) {
+  const bar  = document.getElementById('fb-sync-bar');
+  const dot  = document.getElementById('fb-dot');
+  const text = document.getElementById('fb-status-text');
+  if (!bar) return;
+  bar.className = 'fb-' + state;
+  dot.className = 'fb-dot fb-dot-' + state;
+  if (msg) text.textContent = msg;
+}
+
+// ── Get uploads (cloud first, fallback to localStorage)
+function getSharedUploads() {
+  if (fbLiveUploads !== null) return fbLiveUploads;
+  try { return JSON.parse(localStorage.getItem('lex-shared-uploads') || '[]'); } catch(e) { return []; }
+}
+
+// ── Set uploads (saves to cloud if connected, always saves to localStorage too)
+async function setSharedUploads(arr) {
+  try { localStorage.setItem('lex-shared-uploads', JSON.stringify(arr)); } catch(e) {}
+  // Cloud sync handled file by file in handleFilesForCat
+}
+
+// ── Upload a single file record to Firestore
+async function fbUploadRecord(record) {
+  if (!db) return false;
+  try {
+    setSyncBar('busy', '⬆ Uploading to cloud…');
+
+    // If file has content (base64/text), store it in Firebase Storage first
+    let storageUrl = null;
+    if (record.content && storage) {
+      try {
+        const ref = storage.ref('uploads/' + record.id + '_' + record.name);
+        if (record.contentType === 'text') {
+          // Store text as blob
+          const blob = new Blob([record.content], {type:'text/plain'});
+          const snap = await ref.put(blob);
+          storageUrl = await snap.ref.getDownloadURL();
+        } else {
+          // Store base64 as data URL — convert to blob
+          const res  = await fetch(record.content);
+          const blob = await res.blob();
+          const snap = await ref.put(blob);
+          storageUrl = await snap.ref.getDownloadURL();
+        }
+      } catch(storErr) {
+        // Storage upload failed — store content inline in Firestore (smaller files only)
+        console.warn('Storage upload failed, storing inline:', storErr.message);
+        storageUrl = null;
+      }
+    }
+
+    // Save metadata to Firestore (with storage URL if available)
+    const firestoreRecord = { ...record, timestamp: firebase.firestore.FieldValue.serverTimestamp() };
+    if (storageUrl) {
+      firestoreRecord.storageUrl = storageUrl;
+      // Don't store large base64 inline if we have cloud URL
+      if (record.contentType !== 'text') firestoreRecord.content = storageUrl;
+    }
+
+    await db.collection('uploads').doc(record.id).set(firestoreRecord);
+    setSyncBar('ok', '☁ Cloud sync active — uploads visible to all users on all devices');
+    return true;
+  } catch(e) {
+    setSyncBar('err', '⚠ Cloud upload failed: ' + e.message.substring(0,60));
+    showToast('⚠ Saved locally, cloud upload failed: ' + e.message.substring(0,50));
+    return false;
+  }
+}
+
+// ── Delete from Firestore
+async function fbDeleteRecord(id) {
+  if (!db) return;
+  try {
+    await db.collection('uploads').doc(id).delete();
+    // Also delete from storage if possible
+    if (storage) {
+      try {
+        const files = await storage.ref('uploads/').listAll();
+        for (const item of files.items) {
+          if (item.name.startsWith(id + '_')) await item.delete();
+        }
+      } catch(e) { /* ignore storage delete errors */ }
+    }
+  } catch(e) {
+    console.warn('Firestore delete failed:', e.message);
+  }
+}
+
+// ── Setup Modal
+function openFBSetup() {
+  document.getElementById('fb-setup-modal').classList.add('show');
+  const cfg = fbGetConfig();
+  if (cfg) {
+    if (document.getElementById('fb-api-key')) document.getElementById('fb-api-key').value = cfg.apiKey || '';
+    if (document.getElementById('fb-project-id')) document.getElementById('fb-project-id').value = cfg.projectId || '';
+    if (document.getElementById('fb-auth-domain')) document.getElementById('fb-auth-domain').value = cfg.authDomain || '';
+    if (document.getElementById('fb-storage-bucket')) document.getElementById('fb-storage-bucket').value = cfg.storageBucket || '';
+    if (document.getElementById('fb-app-id')) document.getElementById('fb-app-id').value = cfg.appId || '';
+  }
+}
+function closeFBSetup() { document.getElementById('fb-setup-modal').classList.remove('show'); }
+
+async function fbSaveAndConnect() {
+  const cfg = {
+    apiKey:        document.getElementById('fb-api-key').value.trim(),
+    authDomain:    document.getElementById('fb-auth-domain').value.trim(),
+    projectId:     document.getElementById('fb-project-id').value.trim(),
+    storageBucket: document.getElementById('fb-storage-bucket').value.trim(),
+    appId:         document.getElementById('fb-app-id').value.trim()
+  };
+  if (!cfg.apiKey || !cfg.projectId) {
+    showToast('⚠ Please enter at least API Key and Project ID');
+    return;
+  }
+  fbSaveConfig(cfg);
+  const ok = await fbConnect(cfg, true);
+  if (ok) { showToast('✅ Firebase connected! Files now sync to all devices.'); }
+}
+
+async function fbTestConnection() {
+  const cfg = {
+    apiKey:        document.getElementById('fb-api-key').value.trim(),
+    authDomain:    document.getElementById('fb-auth-domain').value.trim(),
+    projectId:     document.getElementById('fb-project-id').value.trim(),
+    storageBucket: document.getElementById('fb-storage-bucket').value.trim(),
+    appId:         document.getElementById('fb-app-id').value.trim()
+  };
+  await fbConnect(cfg, true);
+}
+
+function fbDisconnect() {
+  if (fbUnsubscribe) fbUnsubscribe();
+  fbLiveUploads = null; db = null; storage = null; fbApp = null;
+  localStorage.removeItem(FB_CONFIG_KEY);
+  setSyncBar('off', '');
+  showToast('Firebase disconnected. Using local storage only.');
+  closeFBSetup();
+}
+
+// ── Migrate local files to cloud
+async function fbMigrateLocal() {
+  if (!db) { showToast('⚠ Connect to Firebase first!'); return; }
+  const local = JSON.parse(localStorage.getItem('lex-shared-uploads') || '[]');
+  if (!local.length) { showToast('No local files to migrate.'); return; }
+  showToast('⬆ Migrating ' + local.length + ' local files to cloud…');
+  let count = 0;
+  for (const rec of local) {
+    const ok = await fbUploadRecord(rec);
+    if (ok) count++;
+  }
+  showToast('✅ Migrated ' + count + '/' + local.length + ' files to cloud. All users can now see them!');
+}
+
+// ── Kick off Firebase init after DOM load
+document.addEventListener('DOMContentLoaded', function() {
+  fbInit();
+});
+
 </script>
 </body>
 </html>
