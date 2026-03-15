@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SKHT COURT — Legal Research Suite</title>
+<title>SKHT COURT — Legal Research Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=JetBrains+Mono:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <!-- GitHub used as live database backend -->
 <style>
@@ -988,6 +988,105 @@ mark.fv-hl-current{background:rgba(201,168,76,0.75);color:#000;border-radius:2px
 .color-dot.selected{border-color:white;transform:scale(1.2);}
 .notification-dot{position:absolute;top:4px;right:4px;width:8px;height:8px;background:#e74c3c;border-radius:50%;border:1px solid var(--bg);}
 
+
+/* ══ CITATION CARDS — SKHT COURT ══ */
+.cit-category-section { margin-bottom: 32px; }
+.cit-cat-header {
+  display:flex;align-items:center;gap:12px;
+  padding:10px 16px;border-radius:var(--radius);
+  margin-bottom:14px;border-left:4px solid;
+}
+.cit-cat-title {
+  font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text);
+}
+.cit-cat-count {
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  color:var(--text3);margin-left:auto;
+}
+.cit-card {
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);margin-bottom:14px;overflow:hidden;
+  transition:border-color 0.2s,box-shadow 0.2s;
+}
+.cit-card:hover { border-color:var(--border2);box-shadow:var(--shadow); }
+.cit-card-header {
+  padding:18px 22px 14px;cursor:pointer;
+  display:flex;align-items:flex-start;gap:14px;
+}
+.cit-card-header:hover { background:rgba(255,255,255,0.02); }
+.cit-card-left { flex:1; }
+.cit-card-name {
+  font-family:'Playfair Display',serif;font-size:17px;font-weight:700;
+  color:var(--text);margin-bottom:5px;line-height:1.35;font-style:italic;
+}
+.cit-card-address {
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);
+  margin-bottom:6px;letter-spacing:0.04em;
+}
+.cit-card-badges { display:flex;gap:8px;flex-wrap:wrap;margin-top:4px; }
+.cit-expand-btn {
+  background:none;border:1px solid var(--border2);border-radius:5px;
+  color:var(--text3);font-size:12px;cursor:pointer;padding:4px 10px;
+  transition:all 0.18s;flex-shrink:0;margin-top:2px;
+}
+.cit-expand-btn:hover { border-color:var(--gold);color:var(--gold); }
+.cit-card-body {
+  display:none;border-top:1px solid var(--border);
+}
+.cit-card-body.open { display:block; }
+.cit-section {
+  padding:14px 22px;border-bottom:1px solid var(--border);
+}
+.cit-section:last-child { border-bottom:none; }
+.cit-section-label {
+  font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--gold);
+  text-transform:uppercase;letter-spacing:0.14em;margin-bottom:6px;
+  display:flex;align-items:center;gap:6px;
+}
+.cit-section-label::after {
+  content:'';flex:1;height:1px;background:var(--border);
+}
+.cit-section-text {
+  font-size:14px;color:var(--text2);line-height:1.85;
+}
+.cit-file-section {
+  padding:12px 22px;background:var(--surface2);
+}
+.cit-file-list { display:flex;flex-wrap:wrap;gap:8px;margin-top:8px; }
+.cit-file-btn {
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 14px;border-radius:var(--radius);
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  cursor:pointer;transition:all 0.18s;border:1px solid;
+}
+.cit-file-pdf  { border-color:rgba(231,76,60,0.4);color:#e74c3c;background:rgba(231,76,60,0.07); }
+.cit-file-pdf:hover  { background:rgba(231,76,60,0.15); }
+.cit-file-docx { border-color:rgba(37,99,235,0.4);color:#60a5fa;background:rgba(37,99,235,0.07); }
+.cit-file-docx:hover { background:rgba(37,99,235,0.15); }
+.cit-file-other{ border-color:var(--border2);color:var(--text3);background:var(--surface); }
+.cit-file-other:hover { border-color:var(--gold);color:var(--gold); }
+.cit-footer {
+  padding:10px 22px;border-top:1px solid var(--border);
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  background:rgba(0,0,0,0.15);
+}
+
+/* Citation categories filter tabs */
+.cit-cat-tabs {
+  display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;
+}
+.cit-cat-tab {
+  padding:7px 16px;border-radius:20px;cursor:pointer;
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;
+  border:1px solid var(--border2);color:var(--text3);
+  transition:all 0.18s;letter-spacing:0.04em;text-transform:uppercase;
+}
+.cit-cat-tab:hover { border-color:var(--gold);color:var(--gold); }
+.cit-cat-tab.active { background:var(--gold);color:#000;border-color:var(--gold); }
+
+/* Add citation modal fields */
+.cit-add-form .u-field { margin-bottom:14px; }
+
 </style>
 </head>
 <body>
@@ -999,7 +1098,7 @@ mark.fv-hl-current{background:rgba(201,168,76,0.75);color:#000;border-radius:2px
     <div class="login-logo">
       <span class="emblem">⚖</span>
       <h1>SKHT COURT</h1>
-      <p>Legal Research Suite — Secure Access</p>
+      <p>Legal Research Portal — Secure Access</p>
     </div>
     <div class="login-error" id="login-error">Invalid username or password. Please try again.</div>
     <label class="login-label">Username</label>
@@ -1069,7 +1168,7 @@ mark.fv-hl-current{background:rgba(201,168,76,0.75);color:#000;border-radius:2px
     <div class="nav-item" onclick="showDL('books')">
       <div class="nav-icon">📚</div><div class="nav-label">Books & Commentaries</div>
     </div>
-    <div class="nav-item" onclick="showDL('citations')">
+    <div class="nav-item" onclick="showPage('citations')">
       <div class="nav-icon">📜</div><div class="nav-label">Citations</div>
     </div>
     <div class="nav-item" onclick="showDL('others')">
@@ -1107,7 +1206,7 @@ mark.fv-hl-current{background:rgba(201,168,76,0.75);color:#000;border-radius:2px
       <div class="nav-icon" style="font-size:15px">🚪</div>
       <div class="nav-label" style="font-size:12px;color:var(--danger)">Sign Out</div>
     </div>
-    <div class="version-tag">SKHT COURT v5.0</div>
+    <div class="version-tag">SKHT COURT</div>
   </div>
 </aside>
 
@@ -1134,9 +1233,9 @@ mark.fv-hl-current{background:rgba(201,168,76,0.75);color:#000;border-radius:2px
     </div>
     <div class="stat-row">
       <div class="stat-card"><div class="stat-num" id="s-citations">—</div><div class="stat-label">Citations</div></div>
-      <div class="stat-card"><div class="stat-num" id="s-ebooks">72</div><div class="stat-label">eBooks</div></div>
-      <div class="stat-card"><div class="stat-num" id="s-acts">26</div><div class="stat-label">Bare Acts</div></div>
-      <div class="stat-card"><div class="stat-num" id="s-uploaded">—</div><div class="stat-label">Uploaded Files</div></div>
+      <div class="stat-card"><div class="stat-num" id="s-judgments">—</div><div class="stat-label">Judgments</div></div>
+      <div class="stat-card"><div class="stat-num" id="s-bareacts">—</div><div class="stat-label">Bare Acts</div></div>
+      <div class="stat-card"><div class="stat-num" id="s-uploaded">—</div><div class="stat-label">Total Files</div></div>
       <div class="stat-card"><div class="stat-num" id="s-downloads">—</div><div class="stat-label">My Saved</div></div>
     </div>
     <div class="sources-bar">
@@ -1187,11 +1286,36 @@ mark.fv-hl-current{background:rgba(201,168,76,0.75);color:#000;border-radius:2px
       <button class="btn-ghost" onclick="showPage('doclibrary')">Open Library →</button>
     </div>
     <div class="dl-cat-grid" style="margin-bottom:28px;">
-      <div class="dl-cat-tile" onclick="showDL('bareacts')"><div class="dl-cat-icon">📋</div><div class="dl-cat-name">Bare Acts</div><div class="dl-cat-count" id="dash-cnt-bareacts">—</div></div>
-      <div class="dl-cat-tile" onclick="showDL('judgments')"><div class="dl-cat-icon">⚖</div><div class="dl-cat-name">Judgments</div><div class="dl-cat-count" id="dash-cnt-judgments">—</div></div>
-      <div class="dl-cat-tile" onclick="showDL('books')"><div class="dl-cat-icon">📚</div><div class="dl-cat-name">Books</div><div class="dl-cat-count" id="dash-cnt-books">—</div></div>
-      <div class="dl-cat-tile" onclick="showDL('citations')"><div class="dl-cat-icon">📜</div><div class="dl-cat-name">Citations</div><div class="dl-cat-count" id="dash-cnt-citations">—</div></div>
-      <div class="dl-cat-tile" onclick="showDL('others')"><div class="dl-cat-icon">🗂</div><div class="dl-cat-name">Others</div><div class="dl-cat-count" id="dash-cnt-others">—</div></div>
+      <div class="dl-cat-tile" onclick="showPage('citations')">
+        <div class="dl-cat-icon">📜</div>
+        <div class="dl-cat-name">Citations</div>
+        <div class="dl-cat-count" id="dash-cnt-citations">—</div>
+        <div class="dl-cat-desc">Case laws, judgments, AIR citations</div>
+      </div>
+      <div class="dl-cat-tile" onclick="showDL('judgments')">
+        <div class="dl-cat-icon">⚖</div>
+        <div class="dl-cat-name">Judgments</div>
+        <div class="dl-cat-count" id="dash-cnt-judgments">—</div>
+        <div class="dl-cat-desc">Full judgment PDFs &amp; orders</div>
+      </div>
+      <div class="dl-cat-tile" onclick="showDL('bareacts')">
+        <div class="dl-cat-icon">📋</div>
+        <div class="dl-cat-name">Bare Acts</div>
+        <div class="dl-cat-count" id="dash-cnt-bareacts">—</div>
+        <div class="dl-cat-desc">Statutes, codes &amp; amendments</div>
+      </div>
+      <div class="dl-cat-tile" onclick="showDL('books')">
+        <div class="dl-cat-icon">📚</div>
+        <div class="dl-cat-name">Books</div>
+        <div class="dl-cat-count" id="dash-cnt-books">—</div>
+        <div class="dl-cat-desc">Textbooks &amp; commentaries</div>
+      </div>
+      <div class="dl-cat-tile" onclick="showDL('others')">
+        <div class="dl-cat-icon">🗂</div>
+        <div class="dl-cat-name">Others</div>
+        <div class="dl-cat-count" id="dash-cnt-others">—</div>
+        <div class="dl-cat-desc">Circulars, forms &amp; notices</div>
+      </div>
     </div>
     <div class="sec-title">
       <div><span class="sec-sub">Latest</span><h2>Recent <em>Citations</em></h2></div>
@@ -1252,6 +1376,35 @@ mark.fv-hl-current{background:rgba(201,168,76,0.75);color:#000;border-radius:2px
     <div id="search-history-list" class="citations-list">
       <div class="empty"><div class="empty-icon">🔍</div><p>No searches yet.</p></div>
     </div>
+  </div>
+
+  <!-- ═══ CITATIONS PAGE ═══ -->
+  <div class="page" id="page-citations">
+    <div class="sec-title">
+      <div><span class="sec-sub">SKHT COURT</span><h2>Case <em>Citations</em></h2></div>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <span id="cit-total-count" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);"></span>
+        <button class="btn-gold hidden-nav" id="cit-add-btn" onclick="showAddCitationModal()">+ Add Citation</button>
+      </div>
+    </div>
+
+    <!-- Search bar -->
+    <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+      <div class="search-wrap" style="flex:1;">
+        <input type="text" id="cit-search-input" placeholder="Search citations by name, citation address, section, keyword…"
+               onkeydown="if(event.key==='Enter')searchCitations()"
+               style="flex:1;padding:11px 16px;background:transparent;border:none;outline:none;color:var(--text);font-family:'Outfit',sans-serif;font-size:14px;"/>
+        <button class="search-go" onclick="searchCitations()">Search</button>
+      </div>
+    </div>
+
+    <!-- Category filter tabs -->
+    <div class="cit-cat-tabs" id="cit-cat-tabs">
+      <div class="cit-cat-tab active" onclick="filterCitations('all')">All</div>
+    </div>
+
+    <!-- Citations list -->
+    <div id="citations-page-list"></div>
   </div>
 
   <!-- ═══ DOCUMENT LIBRARY (Main hub) ═══ -->
@@ -1582,6 +1735,85 @@ mark.fv-hl-current{background:rgba(201,168,76,0.75);color:#000;border-radius:2px
   </div>
 </div>
 
+<!-- ══ ADD / EDIT CITATION MODAL ══ -->
+<div class="u-modal" id="modal-add-citation">
+  <div class="u-modal-box" style="width:min(680px,96vw);">
+    <div class="u-modal-header">
+      <h3 id="cit-modal-title">📜 Add Citation</h3>
+      <button class="modal-close" onclick="closeModal2('modal-add-citation')">✕</button>
+    </div>
+    <div class="u-modal-body cit-add-form">
+      <input type="hidden" id="cit-edit-id"/>
+      <div class="u-field">
+        <label>Citation Name <span style="color:var(--danger)">*</span></label>
+        <input id="cit-f-name" placeholder="e.g. Arnesh Kumar v. State of Bihar"/>
+      </div>
+      <div class="u-field">
+        <label>Citation Address <span style="color:var(--danger)">*</span></label>
+        <input id="cit-f-address" placeholder="e.g. (2014) 8 SCC 273 | AIR 2014 SC 2756 | 2014 Cri LJ 3451"/>
+      </div>
+      <div class="u-field">
+        <label>Category <span style="color:var(--danger)">*</span></label>
+        <select id="cit-f-cat">
+          <option value="criminal">Criminal Law</option>
+          <option value="civil">Civil Law</option>
+          <option value="constitutional">Constitutional Law</option>
+          <option value="family">Family Law</option>
+          <option value="labour">Labour Law</option>
+          <option value="tax">Tax Law</option>
+          <option value="property">Property Law</option>
+          <option value="consumer">Consumer Law</option>
+          <option value="arbitration">Arbitration</option>
+          <option value="negotiable">Negotiable Instruments Act</option>
+          <option value="ipc">IPC / Criminal</option>
+          <option value="crpc">CrPC / Procedure</option>
+          <option value="evidence">Evidence Act</option>
+          <option value="motor">Motor Accident</option>
+          <option value="service">Service Law</option>
+          <option value="company">Company Law</option>
+          <option value="custom">Custom / Add New…</option>
+        </select>
+        <input id="cit-f-cat-custom" placeholder="Type custom category name…" style="display:none;margin-top:8px;width:100%;padding:10px 14px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);font-family:'Outfit',sans-serif;font-size:14px;outline:none;"/>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="u-field">
+          <label>Court</label>
+          <input id="cit-f-court" placeholder="e.g. Supreme Court of India"/>
+        </div>
+        <div class="u-field">
+          <label>Year</label>
+          <input id="cit-f-year" placeholder="e.g. 2014" type="number" min="1950" max="2030"/>
+        </div>
+      </div>
+      <div class="u-field">
+        <label>AIR Summary (Headnote / Key Principle)</label>
+        <textarea id="cit-f-air" rows="3" placeholder="Brief legal principle or headnote as reported in AIR / SCC…"></textarea>
+      </div>
+      <div class="u-field">
+        <label>AI Generated Summary (Detailed Analysis)</label>
+        <textarea id="cit-f-ai" rows="4" placeholder="Detailed analysis — facts, issues, held, ratio decidendi…"></textarea>
+      </div>
+      <div class="u-field">
+        <label>Full Content / Judgment Text</label>
+        <textarea id="cit-f-content" rows="5" placeholder="Full text, important paragraphs, or key observations from the judgment…"></textarea>
+      </div>
+      <div class="u-field">
+        <label>Attached Files (PDF / DOCX — upload to GitHub first, then paste raw URL)</label>
+        <div id="cit-f-files-list" style="margin-bottom:8px;"></div>
+        <div style="display:flex;gap:8px;">
+          <input id="cit-f-file-url" placeholder="https://raw.githubusercontent.com/shaikhumayun/SH-LEGAL/main/citations/filename.pdf" style="flex:1;padding:9px 14px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:11px;outline:none;"/>
+          <button class="btn-ghost" style="padding:8px 14px;font-size:12px;" onclick="addCitationFileUrl()">+ Add</button>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-top:5px;">Upload the PDF to your GitHub repo, then paste the raw URL here.</div>
+      </div>
+    </div>
+    <div class="u-modal-footer">
+      <button class="btn-ghost" onclick="closeModal2('modal-add-citation')">Cancel</button>
+      <button class="btn-gold" onclick="saveCitation()">Save Citation</button>
+    </div>
+  </div>
+</div>
+
 <!-- ════════════ GITHUB SYNC BAR ════════════ -->
 <div id="gh-sync-bar" class="gh-bar-off">
   <div class="gh-bar-dot" id="gh-bar-dot"></div>
@@ -1669,7 +1901,15 @@ mark.fv-hl-current{background:rgba(201,168,76,0.75);color:#000;border-radius:2px
       <div id="ghs-test-result" style="margin-top:12px;padding:10px 14px;border-radius:var(--radius);font-family:'JetBrains Mono',monospace;font-size:11px;display:none;"></div>
 
       <!-- Share hint for other devices -->
-      <div id="gh-share-hint" style="display:none;margin-top:14px;padding:12px 16px;background:rgba(46,204,113,0.07);border:1px solid rgba(46,204,113,0.25);border-radius:var(--radius);font-family:'JetBrains Mono',monospace;font-size:11px;color:#2ecc71;line-height:1.8;"></div>
+      <!-- After connecting, show download option -->
+      <div id="gh-share-hint" style="display:none;margin-top:14px;padding:14px 16px;background:rgba(46,204,113,0.07);border:1px solid rgba(46,204,113,0.3);border-radius:var(--radius);line-height:1.8;"></div>
+
+      <!-- Download pre-configured file button — always visible if connected -->
+      <div id="gh-download-section" style="display:none;margin-top:12px;padding:14px 16px;background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.3);border-radius:var(--radius);">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#60a5fa;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;">📤 Share With Other Users</div>
+        <p style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.7;">Download this HTML file with GitHub pre-configured. Send it to KS, PK, and all other users. When they open it, they automatically see all uploaded files — <strong>no setup needed on their device.</strong></p>
+        <button class="fb-btn-primary" onclick="ghDownloadEmbeddedFile()">⬇ Download Pre-Configured File</button>
+      </div>
 
       <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:var(--text3);line-height:1.85;">
         <strong style="color:var(--text2);">How cross-device sharing works:</strong><br>
@@ -1926,6 +2166,13 @@ function init() {
   updateDLCounts();
   renderCustomFoldersSidebar();
   updateAdminNotifBadge();
+  // Pull citations from GitHub
+  if (typeof ghPullCitations === 'function') {
+    ghPullCitations().then(() => {
+      updateStats();
+      if (document.querySelector('#page-citations.active')) renderCitationsPage();
+    });
+  }
 }
 
 function buildSidebarCats() {
@@ -1941,9 +2188,10 @@ function buildSidebarCats() {
 // ══════════════════════════════════════
 const PAGE_TITLES = {
   dashboard:'Dashboard', aisearch:'AI Citation Search',
-  doclibrary:'Document Library', dlcat:'Document Browser',
-  myfiles:'My Downloads', upload:'Upload Documents',
-  admin:'Admin Panel', folders:'Manage Folders', folderView:'Folder'
+  citations:'Citations', doclibrary:'Document Library',
+  dlcat:'Document Browser', myfiles:'My Downloads',
+  upload:'Upload Documents', admin:'Admin Panel',
+  folders:'Manage Folders', folderView:'Folder'
 };
 
 function showPage(id) {
@@ -1961,6 +2209,7 @@ function showPage(id) {
   if (id === 'doclibrary')  { updateDLCounts(); renderDLRecent(); }
   if (id === 'folders')     renderFoldersPage();
   if (id === 'dashboard')   { updateDLCounts(); updateStats(); }
+  if (id === 'citations')   renderCitationsPage();
 }
 
 // Show document library category
@@ -1985,14 +2234,19 @@ function showDL(cat) {
 }
 
 function updateDLCounts() {
-  const uploads = getSharedUploads();
-  ['bareacts','judgments','books','citations','others'].forEach(cat => {
+  const uploads   = getSharedUploads();
+  const citations = typeof getCitations === 'function' ? getCitations() : [];
+  ['bareacts','judgments','books','others'].forEach(cat => {
     const n = uploads.filter(f => f.dlcat === cat).length;
     const label = n + ' file' + (n !== 1 ? 's' : '');
-    const el1 = document.getElementById('cnt-'+cat);
-    const el2 = document.getElementById('dash-cnt-'+cat);
-    if (el1) el1.textContent = label;
-    if (el2) el2.textContent = label;
+    ['cnt-'+cat, 'dash-cnt-'+cat].forEach(id => {
+      const el = document.getElementById(id); if (el) el.textContent = label;
+    });
+  });
+  // Citations count from citations store
+  const citLabel = citations.length + ' citation' + (citations.length !== 1 ? 's' : '');
+  ['cnt-citations','dash-cnt-citations'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.textContent = citLabel;
   });
 }
 
@@ -2828,7 +3082,7 @@ function saveDL(type, id) {
   setMyDownloads(dls);
   updateStats();
   showToast(`Saved: ${title.substring(0,45)}…`);
-  const blob = new Blob([`SKHT COURT\nTitle: ${title}\nType: ${type}\nSaved: ${new Date().toLocaleString()}\n`],{type:'text/plain'});
+  const blob = new Blob([`LexAdvocate Pro\nTitle: ${title}\nType: ${type}\nSaved: ${new Date().toLocaleString()}\n`],{type:'text/plain'});
   const a = document.createElement('a'); a.href=URL.createObjectURL(blob);
   a.download=title.replace(/[^\w\s]/g,'').substring(0,60).trim()+'.txt'; a.click();
   URL.revokeObjectURL(a.href);
@@ -2968,12 +3222,17 @@ function closeModal(){document.getElementById('modal').classList.remove('show');
 // STATS
 // ══════════════════════════════════════
 function updateStats() {
-  const uploads=getSharedUploads();
-  const dls=getMyDownloads();
-  document.getElementById('s-citations').textContent=BUILT_IN_CITATIONS.length+uploads.filter(f=>f.dlcat==='citations').length;
-  document.getElementById('s-uploaded').textContent=uploads.length;
-  document.getElementById('s-downloads').textContent=dls.length;
-  // per-category counts shown in doc library
+  const uploads  = getSharedUploads();
+  const dls      = getMyDownloads();
+  const citations = typeof getCitations === 'function' ? getCitations() : [];
+  const jud  = uploads.filter(f => f.dlcat==='judgments').length;
+  const acts = uploads.filter(f => f.dlcat==='bareacts').length;
+  const setEl = (id, val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
+  setEl('s-citations', citations.length);
+  setEl('s-judgments', jud);
+  setEl('s-bareacts',  acts);
+  setEl('s-uploaded',  uploads.length);
+  setEl('s-downloads', dls.length);
   updateDLCounts();
 }
 
@@ -3300,7 +3559,7 @@ function fvPrint() {
       <div class="print-header">
         <h1>${escHtml(f.name)}</h1>
         <p>Category: ${DL_CAT_INFO[f.dlcat]?.label || f.dlcat || '—'} · Uploaded by: ${escHtml(f.uploadedBy)} · ${escHtml(f.date)}</p>
-        <p>SKHT COURT — Legal Research Suite</p>
+        <p>SKHT COURT — Legal Research Portal</p>
       </div>
       ${renderTextContent(content)}
       <script>window.onload=function(){window.print();}<\/script>
@@ -4140,6 +4399,447 @@ function renderAdminPage() {
 // init override merged into original
 
 
+
+// ══════════════════════════════════════════════════════
+// CITATIONS SYSTEM — SKHT COURT
+// ══════════════════════════════════════════════════════
+
+const CITATIONS_KEY = 'skht-citations-v1';
+const CIT_GH_PATH   = 'citations/citations.json'; // stored in GitHub repo
+
+// Citation categories
+const CIT_CATEGORIES = [
+  { id:'criminal',      label:'Criminal Law',           color:'#c0392b', dot:'#e74c3c' },
+  { id:'ipc',           label:'IPC / Penal Code',       color:'#922b21', dot:'#e74c3c' },
+  { id:'crpc',          label:'CrPC / Procedure',       color:'#7b241c', dot:'#f1948a' },
+  { id:'civil',         label:'Civil Law',              color:'#1a4a8a', dot:'#3498db' },
+  { id:'constitutional',label:'Constitutional Law',     color:'#9b6a00', dot:'#f39c12' },
+  { id:'family',        label:'Family Law',             color:'#1a6e3c', dot:'#2ecc71' },
+  { id:'labour',        label:'Labour Law',             color:'#6a1a9b', dot:'#9b59b6' },
+  { id:'tax',           label:'Tax Law',                color:'#0a7a8a', dot:'#1abc9c' },
+  { id:'property',      label:'Property Law',           color:'#9b3a00', dot:'#e67e22' },
+  { id:'consumer',      label:'Consumer Law',           color:'#005a1a', dot:'#27ae60' },
+  { id:'arbitration',   label:'Arbitration',            color:'#1a1a7a', dot:'#8e44ad' },
+  { id:'negotiable',    label:'Negotiable Instruments', color:'#4a3500', dot:'#d4ac0d' },
+  { id:'evidence',      label:'Evidence Act',           color:'#2c3e50', dot:'#7f8c8d' },
+  { id:'motor',         label:'Motor Accident',         color:'#6e2f1a', dot:'#e59866' },
+  { id:'service',       label:'Service Law',            color:'#1a3a6e', dot:'#85c1e9' },
+  { id:'company',       label:'Company Law',            color:'#1e4d2b', dot:'#52be80' },
+];
+
+function getCitCategories() {
+  // Include custom categories from saved citations
+  const saved    = getCitations();
+  const existing = new Set(CIT_CATEGORIES.map(c => c.id));
+  const custom   = [];
+  saved.forEach(c => {
+    if (!existing.has(c.cat)) {
+      existing.add(c.cat);
+      custom.push({ id: c.cat, label: c.catLabel || c.cat, color:'#3a3a3a', dot:'#aaaaaa' });
+    }
+  });
+  return [...CIT_CATEGORIES, ...custom];
+}
+
+function getCitations() {
+  try { return JSON.parse(localStorage.getItem(CITATIONS_KEY) || '[]'); } catch(e) { return []; }
+}
+function setCitations(arr) {
+  localStorage.setItem(CITATIONS_KEY, JSON.stringify(arr));
+  // Push to GitHub citations.json
+  if (typeof _ghConnected !== 'undefined' && _ghConnected) {
+    ghWriteCitations(arr);
+  }
+}
+
+// Write citations.json to GitHub
+async function ghWriteCitations(citations) {
+  if (!_ghToken || !_ghUser || !_ghRepo) return;
+  try {
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(citations, null, 2))));
+    const apiUrl  = `https://api.github.com/repos/${_ghUser}/${_ghRepo}/contents/${CIT_GH_PATH}`;
+    let sha = null;
+    const check = await fetch(apiUrl, { headers: { 'Authorization':'token '+_ghToken,'Accept':'application/vnd.github.v3+json' } });
+    if (check.ok) { const d = await check.json(); sha = d.sha; }
+    await fetch(apiUrl, {
+      method: 'PUT',
+      headers: { 'Authorization':'token '+_ghToken,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json' },
+      body: JSON.stringify({ message:'Update citations via SKHT COURT', content, ...(sha?{sha}:{}) })
+    });
+  } catch(e) {}
+}
+
+// Read citations from GitHub (no token needed for public repo)
+async function ghReadCitations() {
+  if (!_ghUser || !_ghRepo) return null;
+  try {
+    const url = `https://raw.githubusercontent.com/${_ghUser}/${_ghRepo}/main/${CIT_GH_PATH}?cb=${Date.now()}`;
+    const r   = await fetch(url, { cache:'no-store' });
+    if (r.status === 404) return [];
+    if (!r.ok) return null;
+    return await r.json();
+  } catch(e) { return null; }
+}
+
+// Pull citations from GitHub on load / login
+async function ghPullCitations() {
+  const remote = await ghReadCitations();
+  if (remote && remote.length > 0) {
+    localStorage.setItem(CITATIONS_KEY, JSON.stringify(remote));
+  }
+}
+
+// ── Current filter state
+let _citFilter = 'all';
+let _citSearch = '';
+
+// ── Render the full citations page
+function renderCitationsPage() {
+  let citations = getCitations();
+  const total   = citations.length;
+  const countEl = document.getElementById('cit-total-count');
+  if (countEl) countEl.textContent = total + ' citation' + (total!==1?'s':'');
+
+  // Show/hide Add button for admins
+  const addBtn = document.getElementById('cit-add-btn');
+  if (addBtn) addBtn.style.display = currentUser?.canUpload ? 'flex' : 'none';
+
+  // Apply search filter
+  if (_citSearch) {
+    const q = _citSearch.toLowerCase();
+    citations = citations.filter(c =>
+      (c.name||'').toLowerCase().includes(q) ||
+      (c.address||'').toLowerCase().includes(q) ||
+      (c.court||'').toLowerCase().includes(q) ||
+      (c.air||'').toLowerCase().includes(q) ||
+      (c.ai||'').toLowerCase().includes(q) ||
+      (c.content||'').toLowerCase().includes(q)
+    );
+  }
+
+  // Apply category filter
+  if (_citFilter !== 'all') {
+    citations = citations.filter(c => c.cat === _citFilter);
+  }
+
+  // Build category tabs
+  buildCitCategoryTabs();
+
+  const container = document.getElementById('citations-page-list');
+  if (!container) return;
+
+  if (!citations.length) {
+    container.innerHTML = `<div class="empty">
+      <div class="empty-icon">📜</div>
+      <p>${_citSearch ? 'No citations match your search.' : 'No citations added yet.'}<br>
+      ${currentUser?.canUpload ? 'Click <strong>+ Add Citation</strong> to add one.' : 'Ask an admin to add citations.'}</p>
+    </div>`;
+    return;
+  }
+
+  // Group by category
+  if (_citFilter === 'all' && !_citSearch) {
+    const cats = getCitCategories();
+    const grouped = {};
+    citations.forEach(c => {
+      if (!grouped[c.cat]) grouped[c.cat] = [];
+      grouped[c.cat].push(c);
+    });
+
+    container.innerHTML = Object.keys(grouped).map(catId => {
+      const catInfo = cats.find(x => x.id === catId) || { label: catId, color:'#555', dot:'#888' };
+      const items   = grouped[catId];
+      return `<div class="cit-category-section">
+        <div class="cit-cat-header" style="background:${catInfo.color}18;border-color:${catInfo.color};">
+          <span style="width:10px;height:10px;border-radius:50%;background:${catInfo.dot};display:inline-block;"></span>
+          <span class="cit-cat-title">${escHtml(catInfo.label)}</span>
+          <span class="cit-cat-count">${items.length} citation${items.length!==1?'s':''}</span>
+        </div>
+        ${items.map(c => citationCard(c)).join('')}
+      </div>`;
+    }).join('');
+  } else {
+    container.innerHTML = citations.map(c => citationCard(c)).join('');
+  }
+}
+
+// ── Build a single citation card
+function citationCard(c) {
+  const isSU    = currentUser?.role === 'superadmin';
+  const isAdmin = currentUser?.canUpload;
+  const files   = c.files || [];
+
+  const fileButtons = files.map(f => {
+    const ext = (f.url||'').split('.').pop().toLowerCase().split('?')[0];
+    const cls = ext==='pdf' ? 'cit-file-pdf' : ['docx','doc'].includes(ext) ? 'cit-file-docx' : 'cit-file-other';
+    const icon = ext==='pdf' ? '📕' : ['docx','doc'].includes(ext) ? '📘' : '📄';
+    return `<button class="cit-file-btn ${cls}" onclick="openCitFile('${escHtml(f.url)}','${escHtml(f.name||f.url)}')">${icon} ${escHtml(f.name || 'View File')}</button>`;
+  }).join('');
+
+  return `<div class="cit-card" id="cit-card-${c.id}">
+    <div class="cit-card-header" onclick="toggleCitCard('${c.id}')">
+      <div class="cit-card-left">
+        <div class="cit-card-name">${escHtml(c.name || 'Untitled')}</div>
+        <div class="cit-card-address">${escHtml(c.address || '—')}</div>
+        <div class="cit-card-badges">
+          ${c.court ? `<span class="cat-tag" style="background:rgba(37,99,235,0.1);color:#60a5fa;border:1px solid rgba(37,99,235,0.3);">🏛 ${escHtml(c.court)}</span>` : ''}
+          ${c.year  ? `<span class="cat-tag" style="background:rgba(201,168,76,0.1);color:var(--gold);border:1px solid rgba(201,168,76,0.3);">📅 ${c.year}</span>` : ''}
+          ${files.length ? `<span class="cat-tag" style="background:rgba(231,76,60,0.1);color:#e74c3c;border:1px solid rgba(231,76,60,0.3);">📎 ${files.length} file${files.length!==1?'s':''}</span>` : ''}
+        </div>
+      </div>
+      <button class="cit-expand-btn" id="cit-btn-${c.id}">▼ Expand</button>
+    </div>
+
+    <div class="cit-card-body" id="cit-body-${c.id}">
+      ${c.air ? `<div class="cit-section">
+        <div class="cit-section-label">AIR Summary / Headnote</div>
+        <div class="cit-section-text">${escHtml(c.air)}</div>
+      </div>` : ''}
+
+      ${c.ai ? `<div class="cit-section">
+        <div class="cit-section-label">AI Generated Summary</div>
+        <div class="cit-section-text">${escHtml(c.ai)}</div>
+      </div>` : ''}
+
+      ${c.content ? `<div class="cit-section">
+        <div class="cit-section-label">Full Content / Judgment Extracts</div>
+        <div class="cit-section-text" style="font-family:'Georgia',serif;font-size:13.5px;line-height:2;">${escHtml(c.content)}</div>
+      </div>` : ''}
+
+      ${files.length ? `<div class="cit-file-section">
+        <div class="cit-section-label" style="margin-bottom:8px;">Attached Files</div>
+        <div class="cit-file-list">${fileButtons}</div>
+      </div>` : ''}
+
+      ${isAdmin ? `<div class="cit-footer">
+        <button class="btn-xs btn-xs-open" onclick="editCitation('${c.id}')">✏ Edit</button>
+        ${isSU ? `<button class="btn-xs btn-xs-del" onclick="deleteCitation('${c.id}')">🗑 Delete</button>` : ''}
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3);margin-left:auto;">Added by ${escHtml(c.addedBy||'—')} · ${escHtml(c.date||'—')}</span>
+      </div>` : ''}
+    </div>
+  </div>`;
+}
+
+function toggleCitCard(id) {
+  const body = document.getElementById('cit-body-' + id);
+  const btn  = document.getElementById('cit-btn-'  + id);
+  if (!body) return;
+  const isOpen = body.classList.toggle('open');
+  if (btn) btn.textContent = isOpen ? '▲ Collapse' : '▼ Expand';
+}
+
+function openCitFile(url, name) {
+  // Open PDF/file in the file viewer overlay if possible
+  if (url.endsWith('.pdf') || url.includes('.pdf')) {
+    // Create a temporary file record and open in viewer
+    const tempFile = {
+      id: 'temp_cit_' + Date.now(),
+      name: name || url.split('/').pop(),
+      contentType: 'pdf',
+      content: url,
+      type: 'pdf',
+      size: '—',
+      uploadedBy: '—',
+      date: '—',
+      dlcat: 'citations'
+    };
+    // Temporarily add to store for viewer
+    window._citTempFile = tempFile;
+    fvCurrentFile = tempFile;
+    document.getElementById('fv-title').textContent = tempFile.name;
+    document.getElementById('fv-s-name').textContent = tempFile.name;
+    document.getElementById('fv-s-type').textContent = 'PDF';
+    document.getElementById('fv-s-size').textContent = '—';
+    document.getElementById('fv-s-by').textContent   = 'Citation File';
+    document.getElementById('fv-s-date').textContent = '—';
+    document.getElementById('fv-bc-cat').textContent = 'Citations';
+    document.getElementById('fv-bc-name').textContent = tempFile.name;
+    const body = document.getElementById('fv-body');
+    body.innerHTML = '';
+    const wrap = document.createElement('div');
+    wrap.className = 'fv-pdf-wrap';
+    wrap.innerHTML = `<iframe class="fv-pdf-embed" id="fv-pdf-iframe" src="${url}#toolbar=1" title="${escHtml(tempFile.name)}"></iframe>`;
+    body.appendChild(wrap);
+    document.getElementById('fv-s-words-wrap').style.display = 'none';
+    document.getElementById('fv-search-wrap').style.opacity = '0.4';
+    document.getElementById('fv-search-wrap').style.pointerEvents = 'none';
+    document.getElementById('file-viewer-overlay').classList.add('show');
+  } else {
+    window.open(url, '_blank');
+  }
+}
+
+// ── Build category tabs
+function buildCitCategoryTabs() {
+  const tabsEl = document.getElementById('cit-cat-tabs');
+  if (!tabsEl) return;
+  const citations = getCitations();
+  const usedCats  = [...new Set(citations.map(c => c.cat))];
+  const cats      = getCitCategories().filter(c => usedCats.includes(c.id));
+
+  tabsEl.innerHTML =
+    `<div class="cit-cat-tab ${_citFilter==='all'?'active':''}" onclick="filterCitations('all')">All (${citations.length})</div>` +
+    cats.map(c => {
+      const count = citations.filter(x => x.cat === c.id).length;
+      return `<div class="cit-cat-tab ${_citFilter===c.id?'active':''}" onclick="filterCitations('${c.id}')"
+        style="${_citFilter===c.id ? `background:${c.color};border-color:${c.color};` : `border-color:${c.color}44;color:${c.dot};`}"
+      >${escHtml(c.label)} (${count})</div>`;
+    }).join('');
+}
+
+function filterCitations(cat) {
+  _citFilter = cat;
+  _citSearch = '';
+  document.getElementById('cit-search-input').value = '';
+  renderCitationsPage();
+}
+
+function searchCitations() {
+  _citSearch = document.getElementById('cit-search-input').value.trim();
+  _citFilter = 'all';
+  renderCitationsPage();
+}
+
+// ── Add/Edit modal
+let _citFileUrls = [];
+
+function showAddCitationModal() {
+  if (!currentUser?.canUpload) { showToast('⛔ Admins only'); return; }
+  document.getElementById('cit-modal-title').textContent = '📜 Add Citation';
+  document.getElementById('cit-edit-id').value = '';
+  document.getElementById('cit-f-name').value    = '';
+  document.getElementById('cit-f-address').value = '';
+  document.getElementById('cit-f-cat').value     = 'criminal';
+  document.getElementById('cit-f-cat-custom').style.display = 'none';
+  document.getElementById('cit-f-court').value   = '';
+  document.getElementById('cit-f-year').value    = '';
+  document.getElementById('cit-f-air').value     = '';
+  document.getElementById('cit-f-ai').value      = '';
+  document.getElementById('cit-f-content').value = '';
+  document.getElementById('cit-f-file-url').value= '';
+  _citFileUrls = [];
+  renderCitFileList();
+  document.getElementById('modal-add-citation').classList.add('show');
+  setTimeout(() => document.getElementById('cit-f-name').focus(), 100);
+}
+
+// Handle custom category dropdown
+document.addEventListener('change', function(e) {
+  if (e.target.id === 'cit-f-cat') {
+    const customInp = document.getElementById('cit-f-cat-custom');
+    if (e.target.value === 'custom') {
+      customInp.style.display = 'block';
+      customInp.focus();
+    } else {
+      customInp.style.display = 'none';
+    }
+  }
+});
+
+function addCitationFileUrl() {
+  const url = document.getElementById('cit-f-file-url').value.trim();
+  if (!url) return;
+  const name = url.split('/').pop().split('?')[0];
+  _citFileUrls.push({ url, name });
+  document.getElementById('cit-f-file-url').value = '';
+  renderCitFileList();
+}
+
+function renderCitFileList() {
+  const el = document.getElementById('cit-f-files-list');
+  if (!el) return;
+  if (!_citFileUrls.length) { el.innerHTML = ''; return; }
+  el.innerHTML = _citFileUrls.map((f, i) => `
+    <div style="display:flex;align-items:center;gap:8px;padding:5px 10px;background:var(--surface2);border-radius:4px;margin-bottom:5px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text2);">
+      <span>📎 ${escHtml(f.name)}</span>
+      <button onclick="_citFileUrls.splice(${i},1);renderCitFileList();" style="margin-left:auto;background:none;border:none;color:var(--danger);cursor:pointer;font-size:12px;">✕</button>
+    </div>`).join('');
+}
+
+function editCitation(id) {
+  const cit = getCitations().find(c => c.id === id);
+  if (!cit) return;
+  document.getElementById('cit-modal-title').textContent = '✏ Edit Citation';
+  document.getElementById('cit-edit-id').value    = id;
+  document.getElementById('cit-f-name').value     = cit.name    || '';
+  document.getElementById('cit-f-address').value  = cit.address || '';
+  document.getElementById('cit-f-court').value    = cit.court   || '';
+  document.getElementById('cit-f-year').value     = cit.year    || '';
+  document.getElementById('cit-f-air').value      = cit.air     || '';
+  document.getElementById('cit-f-ai').value       = cit.ai      || '';
+  document.getElementById('cit-f-content').value  = cit.content || '';
+  // Set category
+  const catSel  = document.getElementById('cit-f-cat');
+  const cats    = Array.from(catSel.options).map(o => o.value);
+  if (cats.includes(cit.cat)) {
+    catSel.value = cit.cat;
+    document.getElementById('cit-f-cat-custom').style.display = 'none';
+  } else {
+    catSel.value = 'custom';
+    document.getElementById('cit-f-cat-custom').style.display = 'block';
+    document.getElementById('cit-f-cat-custom').value = cit.catLabel || cit.cat;
+  }
+  _citFileUrls = (cit.files || []).map(f => ({ url: f.url, name: f.name || f.url.split('/').pop() }));
+  renderCitFileList();
+  document.getElementById('modal-add-citation').classList.add('show');
+  setTimeout(() => document.getElementById('cit-f-name').focus(), 100);
+}
+
+function saveCitation() {
+  const name    = document.getElementById('cit-f-name').value.trim();
+  const address = document.getElementById('cit-f-address').value.trim();
+  const catSel  = document.getElementById('cit-f-cat').value;
+  const catCustom = document.getElementById('cit-f-cat-custom').value.trim();
+  const cat     = catSel === 'custom' ? (catCustom.toLowerCase().replace(/\s+/g,'-') || 'other') : catSel;
+  const catLabel= catSel === 'custom' ? catCustom : (CIT_CATEGORIES.find(c=>c.id===catSel)?.label || catSel);
+
+  if (!name)    { showToast('⚠ Citation name is required'); return; }
+  if (!address) { showToast('⚠ Citation address is required'); return; }
+
+  const citations = getCitations();
+  const editId    = document.getElementById('cit-edit-id').value;
+
+  const record = {
+    id:       editId || 'cit_' + Date.now(),
+    name, address, cat, catLabel,
+    court:    document.getElementById('cit-f-court').value.trim(),
+    year:     document.getElementById('cit-f-year').value.trim(),
+    air:      document.getElementById('cit-f-air').value.trim(),
+    ai:       document.getElementById('cit-f-ai').value.trim(),
+    content:  document.getElementById('cit-f-content').value.trim(),
+    files:    _citFileUrls.map(f => ({ url: f.url, name: f.name })),
+    addedBy:  currentUser?.displayName || 'Admin',
+    date:     new Date().toLocaleString('en-IN')
+  };
+
+  if (editId) {
+    const idx = citations.findIndex(c => c.id === editId);
+    if (idx >= 0) citations[idx] = record;
+    else citations.push(record);
+  } else {
+    citations.unshift(record);
+  }
+
+  setCitations(citations);
+  closeModal2('modal-add-citation');
+  renderCitationsPage();
+  updateStats();
+  showToast(editId ? '✅ Citation updated' : '✅ Citation added successfully');
+}
+
+function deleteCitation(id) {
+  if (currentUser?.role !== 'superadmin') { showToast('⛔ Only SH can delete'); return; }
+  if (!confirm('Delete this citation permanently?')) return;
+  setCitations(getCitations().filter(c => c.id !== id));
+  renderCitationsPage();
+  updateStats();
+  showToast('🗑 Citation deleted');
+}
+
+// Citations pulled on init — hooked via init() below
+// PAGE_TITLES updated via the main PAGE_TITLES constant
+
+
 // ══════════════════════════════════════════════════════
 // GITHUB LIVE DATABASE ENGINE v2
 // ══════════════════════════════════════════════════════
@@ -4160,22 +4860,27 @@ function renderAdminPage() {
 //
 // ══════════════════════════════════════════════════════
 
-const GH_CFG_KEY   = 'lex-gh-v10-config';   // full config (token) — SH device only
-const GH_READ_KEY  = 'lex-gh-v10-read';      // read-only config (user+repo) — all devices
+const GH_CFG_KEY   = 'lex-gh-v10-config';
+const GH_READ_KEY  = 'lex-gh-v10-read';
 const GH_DB_PATH   = 'lexdb/db.json';
 const GH_FILES_DIR = 'lexdb/files';
+
+// ── HARDCODED PUBLIC REPO (set once by SH, embedded in HTML)
+// All devices that open this HTML file auto-read from this repo — zero setup
+const HARDCODED_GH_USER = 'shaikhumayun';   // filled in by SH during setup
+const HARDCODED_GH_REPO = 'SH-LEGAL';   // filled in by SH during setup
 
 let _ghUser      = '';
 let _ghRepo      = '';
 let _ghToken     = '';
-let _ghConnected = false;   // true = can write (has token)
-let _ghReadable  = false;   // true = can read (has user+repo, no token needed)
+let _ghConnected = false;
+let _ghReadable  = false;
 let _ghPollTimer = null;
-let _ghLastMD5   = '';      // detect changes in db.json without re-parsing
+let _ghLastMD5   = '';
 
 // ─── Config helpers
 function ghLoadConfig() {
-  // Try full config first (SH device)
+  // 1. Try full config first (SH's device — has token)
   try {
     const full = JSON.parse(localStorage.getItem(GH_CFG_KEY) || 'null');
     if (full && full.user && full.repo && full.token) {
@@ -4184,7 +4889,8 @@ function ghLoadConfig() {
       return full;
     }
   } catch(e) {}
-  // Try read-only config (viewer device)
+
+  // 2. Try saved read-only config
   try {
     const ro = JSON.parse(localStorage.getItem(GH_READ_KEY) || 'null');
     if (ro && ro.user && ro.repo) {
@@ -4193,6 +4899,20 @@ function ghLoadConfig() {
       return ro;
     }
   } catch(e) {}
+
+  // 3. ── HARDCODED FALLBACK (works on every device with zero setup)
+  // Once SH enters their GitHub details, we embed them in the HTML itself.
+  // Every device that opens this HTML file auto-connects to read files.
+  if (HARDCODED_GH_USER && HARDCODED_GH_USER !== '%%GH_USER%%' &&
+      HARDCODED_GH_REPO && HARDCODED_GH_REPO !== '%%GH_REPO%%') {
+    _ghUser = HARDCODED_GH_USER;
+    _ghRepo = HARDCODED_GH_REPO;
+    _ghToken = '';
+    _ghConnected = false;
+    _ghReadable  = true;
+    return { user: _ghUser, repo: _ghRepo };
+  }
+
   return null;
 }
 
@@ -4200,8 +4920,63 @@ function ghSaveFullConfig(user, repo, token) {
   _ghUser = user; _ghRepo = repo; _ghToken = token;
   _ghConnected = true; _ghReadable = true;
   localStorage.setItem(GH_CFG_KEY,  JSON.stringify({ user, repo, token }));
-  // Also save read-only config so token refresh doesn't break reading
   localStorage.setItem(GH_READ_KEY, JSON.stringify({ user, repo }));
+  // ── Embed credentials into a downloadable version of this HTML
+  // so other devices auto-connect just by opening the file
+  ghEmbedAndOfferDownload(user, repo);
+}
+
+function ghEmbedAndOfferDownload(user, repo) {
+  // Get the current HTML source and replace the placeholder values
+  try {
+    const scripts = document.querySelectorAll('script');
+    let src = '';
+    // Get the full HTML
+    src = document.documentElement.outerHTML;
+    // Replace placeholders with real values
+    src = src.replace(/const HARDCODED_GH_USER = '[^']*'/g, "const HARDCODED_GH_USER = '" + user + "'");
+    src = src.replace(/const HARDCODED_GH_REPO = '[^']*'/g, "const HARDCODED_GH_REPO = '" + repo + "'");
+    // Also clear the token from the embedded version for security
+    // (token stays only in localStorage on SH's device)
+    // Store the embed-ready HTML in localStorage so SH can download it
+    try { localStorage.setItem('lex-embed-html', src); } catch(e) {}
+    // Show download button for the pre-configured HTML
+    showEmbedDownloadBanner(user, repo);
+  } catch(e) { console.warn('Embed failed:', e); }
+}
+
+function showEmbedDownloadBanner(user, repo) {
+  const existing = document.getElementById('embed-download-banner');
+  if (existing) existing.remove();
+  const banner = document.createElement('div');
+  banner.id = 'embed-download-banner';
+  banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:linear-gradient(135deg,#1a6e3c,#0a4a2a);padding:12px 20px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 20px rgba(0,0,0,0.5);';
+  banner.innerHTML = \`
+    <span style="font-size:20px;">📤</span>
+    <div style="flex:1;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#2ecc71;font-weight:700;letter-spacing:0.08em;">GITHUB CONNECTED — SHARE THIS FILE WITH ALL USERS</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.8);margin-top:2px;">Download the updated HTML file and send it to KS, PK, and all other users. They will automatically see all files — no setup needed.</div>
+    </div>
+    <button onclick="ghDownloadEmbeddedFile()" style="padding:9px 18px;background:#2ecc71;border:none;border-radius:6px;color:#000;font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">⬇ Download Updated File</button>
+    <button onclick="this.parentElement.remove()" style="padding:9px 12px;background:transparent;border:1px solid rgba(255,255,255,0.3);border-radius:6px;color:white;cursor:pointer;font-size:13px;">✕</button>
+  \`;
+  document.body.appendChild(banner);
+}
+
+function ghDownloadEmbeddedFile() {
+  try {
+    let src = document.documentElement.outerHTML;
+    src = src.replace(/const HARDCODED_GH_USER = '[^']*'/g, "const HARDCODED_GH_USER = '" + _ghUser + "'");
+    src = src.replace(/const HARDCODED_GH_REPO = '[^']*'/g, "const HARDCODED_GH_REPO = '" + _ghRepo + "'");
+    const blob = new Blob([src], { type: 'text/html' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'SKHT_COURT_configured.html';
+    a.click();
+    showToast('✅ Downloaded! Send this file to KS, PK, and all users. Zero setup needed on their devices.');
+  } catch(e) {
+    showToast('⚠ Download failed: ' + e.message);
+  }
 }
 
 function ghSaveReadOnlyConfig(user, repo) {
@@ -4342,6 +5117,13 @@ async function ghPull(silent = false) {
   ghSetLastPull(records.length);
 
   _lexRefreshCurrentPage();
+  // Also pull citations
+  if (typeof ghPullCitations === 'function') {
+    ghPullCitations().then(() => {
+      updateStats();
+      if (document.querySelector('#page-citations.active')) renderCitationsPage();
+    });
+  }
 }
 
 // ─── Start polling — every 10 seconds (fast enough for live feel)
@@ -4450,18 +5232,10 @@ async function ghSaveAndConnect() {
       ghSaveFullConfig(user, repo, token);
       await ghPull(false);
       ghStartPoll();
-      ghShowTestResult('ok', `✅ Connected! Repo: ${d.full_name} (${d.private?'Private':'Public'}) — upload enabled`);
-      showToast('✅ GitHub connected! All uploads will be visible to everyone.');
-
-      // ── IMPORTANT: Share read-only config so other devices can auto-connect
-      // Embed public config into a visible hint for easy sharing
-      const shareBox = document.getElementById('gh-share-hint');
-      if (shareBox) {
-        shareBox.style.display = 'block';
-        shareBox.innerHTML = `<strong>📋 Share this with other devices (no token needed):</strong><br>
-          Username: <code>${escHtml(user)}</code> &nbsp; Repo: <code>${escHtml(repo)}</code><br>
-          <span style="font-size:10px;color:var(--text3);">On other devices: enter username + repo only (leave token blank) → they can read all files automatically.</span>`;
-      }
+      ghShowTestResult('ok', `✅ Connected to ${d.full_name}! Now click "Download Pre-Configured File" below and send it to all users.`);
+      showToast('✅ GitHub connected! Download file below and share with all users.');
+      const dlSection = document.getElementById('gh-download-section');
+      if (dlSection) dlSection.style.display = 'block';
     } catch(e) {
       ghShowTestResult('err', '❌ Network error: ' + e.message);
     }
