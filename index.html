@@ -1695,28 +1695,46 @@ const USERS = [
 let currentUser = null;
 
 function doLogin() {
+  const errEl = document.getElementById('login-error');
   const u = document.getElementById('l-user').value.trim();
   const p = document.getElementById('l-pass').value.trim();
-  const match = USERS.find(x => x.username === u && x.password === p);
+  // Check both hardcoded and dynamically approved users
+  const match = getAllUsers().find(x => x.username === u && x.password === p);
   if (!match) {
-    document.getElementById('login-error').classList.add('show');
+    errEl.textContent = 'Invalid username or password. Please try again.';
+    errEl.classList.add('show');
     document.getElementById('l-pass').value = '';
     document.getElementById('l-pass').focus();
     return;
   }
-  document.getElementById('login-error').classList.remove('show');
+  if (match.disabled) {
+    errEl.textContent = 'Your account has been disabled. Contact the admin.';
+    errEl.classList.add('show');
+    return;
+  }
+  errEl.classList.remove('show');
   currentUser = match;
   document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('signup-screen').style.display = 'none';
   document.getElementById('sidebar').style.display = 'flex';
   document.getElementById('main-app').style.display = 'block';
   setupUserUI();
   init();
-  // After login, always refresh from global store
   setTimeout(_lexRefreshCurrentPage, 100);
 }
 
 function doLogout() {
   currentUser = null;
+  // Reset ALL permission-gated nav items before hiding
+  ['nav-upload','nav-folders','nav-admin'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('hidden-nav');
+  });
+  const tb = document.getElementById('topbar-upload-btn');
+  if (tb) tb.style.display = 'none';
+  // Remove sidebar custom folders
+  const cf = document.getElementById('sidebar-custom-folders');
+  if (cf) cf.remove();
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('sidebar').style.display = 'none';
   document.getElementById('main-app').style.display = 'none';
@@ -1728,26 +1746,46 @@ function doLogout() {
 
 function setupUserUI() {
   const u = currentUser;
+  if (!u) return;
+
+  // Reset all gated items first (clean slate)
+  ['nav-upload','nav-folders','nav-admin'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('hidden-nav');
+  });
+  const tb = document.getElementById('topbar-upload-btn');
+  if (tb) tb.style.display = 'none';
+
   // Sidebar user info
   document.getElementById('user-avatar-text').textContent = u.displayName.charAt(0).toUpperCase();
   document.getElementById('sidebar-username').textContent = u.displayName;
-  document.getElementById('sidebar-role').textContent = u.role === 'superadmin' ? 'Super Admin' : u.role === 'admin' ? 'Admin' : 'Viewer';
+  document.getElementById('sidebar-role').textContent =
+    u.role === 'superadmin' ? '⭐ Super Admin' :
+    u.role === 'admin'      ? '🔑 Admin' : '👁 Viewer';
 
   // Topbar role badge
   const rb = document.getElementById('topbar-role-badge');
   if (u.role === 'superadmin') { rb.textContent = '⭐ Super Admin'; rb.className = 'role-badge role-admin'; }
-  else if (u.role === 'admin') { rb.textContent = '🔑 Admin'; rb.className = 'role-badge role-admin'; }
-  else { rb.textContent = '👁 Viewer'; rb.className = 'role-badge role-user'; }
+  else if (u.role === 'admin') { rb.textContent = '🔑 Admin';       rb.className = 'role-badge role-admin'; }
+  else                         { rb.textContent = '👁 Viewer';       rb.className = 'role-badge role-user'; }
 
-  // Show/hide upload nav
+  // Upload nav — admins and superadmin
   if (u.canUpload) {
-    document.getElementById('nav-upload').classList.remove('hidden-nav');
-    document.getElementById('topbar-upload-btn').style.display = 'flex';
+    const nu = document.getElementById('nav-upload');
+    const nf = document.getElementById('nav-folders');
+    if (nu) nu.classList.remove('hidden-nav');
+    if (nf) nf.classList.remove('hidden-nav');
+    if (tb) tb.style.display = 'flex';
   }
-  // Show admin panel for superadmin only
-  if (u.role === 'superadmin') {
-    document.getElementById('nav-admin').classList.remove('hidden-nav');
+
+  // Admin panel — superadmin AND admins (so KS/PK can see signup requests)
+  if (u.role === 'superadmin' || u.role === 'admin') {
+    const na = document.getElementById('nav-admin');
+    if (na) na.classList.remove('hidden-nav');
   }
+
+  // Notification badge for pending requests
+  setTimeout(updateAdminNotifBadge, 200);
 }
 
 // ══════════════════════════════════════
@@ -1882,6 +1920,8 @@ function init() {
   renderRecent();
   updateStats();
   updateDLCounts();
+  renderCustomFoldersSidebar();
+  updateAdminNotifBadge();
 }
 
 function buildSidebarCats() {
@@ -1898,7 +1938,8 @@ function buildSidebarCats() {
 const PAGE_TITLES = {
   dashboard:'Dashboard', aisearch:'AI Citation Search',
   doclibrary:'Document Library', dlcat:'Document Browser',
-  myfiles:'My Downloads', upload:'Upload Documents', admin:'Admin Panel'
+  myfiles:'My Downloads', upload:'Upload Documents',
+  admin:'Admin Panel', folders:'Manage Folders', folderView:'Folder'
 };
 
 function showPage(id) {
@@ -1914,6 +1955,8 @@ function showPage(id) {
   if (id === 'upload')      renderUploadPage();
   if (id === 'admin')       renderAdminPage();
   if (id === 'doclibrary')  { updateDLCounts(); renderDLRecent(); }
+  if (id === 'folders')     renderFoldersPage();
+  if (id === 'dashboard')   { updateDLCounts(); updateStats(); }
 }
 
 // Show document library category
@@ -2262,6 +2305,13 @@ function renderUploadPage() {
     </div>`;
     return;
   }
+  // Safety: ensure nav is visible (in case setupUserUI ran before DOM was ready)
+  const nu = document.getElementById('nav-upload');
+  const nf = document.getElementById('nav-folders');
+  const tb = document.getElementById('topbar-upload-btn');
+  if (nu) nu.classList.remove('hidden-nav');
+  if (nf) nf.classList.remove('hidden-nav');
+  if (tb) tb.style.display = 'flex';
   const isSU = currentUser?.role === 'superadmin';
   const ghOk = !!(localStorage.getItem('lex-gh-token'));
 
@@ -3522,46 +3572,9 @@ function updateAdminNotifBadge() {
   }
 }
 
-// ── Override doLogin to use getAllUsers
-const _origDoLogin = doLogin;
-function doLogin() {
-  const u = document.getElementById('l-user').value.trim();
-  const p = document.getElementById('l-pass').value.trim();
-  const match = getAllUsers().find(x => x.username === u && x.password === p);
-  if (!match) {
-    document.getElementById('login-error').classList.add('show');
-    document.getElementById('l-pass').value = '';
-    document.getElementById('l-pass').focus();
-    return;
-  }
-  // Check if user is disabled
-  if (match.disabled) {
-    document.getElementById('login-error').textContent = 'Your account has been disabled. Contact the admin.';
-    document.getElementById('login-error').classList.add('show');
-    return;
-  }
-  document.getElementById('login-error').classList.remove('show');
-  currentUser = match;
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('sidebar').style.display = 'flex';
-  document.getElementById('main-app').style.display = 'block';
-  setupUserUI();
-  init();
-  setTimeout(_lexRefreshCurrentPage, 100);
-}
+// doLogin merged into original below — uses getAllUsers directly
 
-// ── Override setupUserUI to show Folders nav
-const _origSetupUserUI = setupUserUI;
-function setupUserUI() {
-  _origSetupUserUI();
-  // Show Folders nav for admins
-  if (currentUser?.canUpload) {
-    const navF = document.getElementById('nav-folders');
-    if (navF) navF.classList.remove('hidden-nav');
-  }
-  // Show notification badge
-  setTimeout(updateAdminNotifBadge, 300);
-}
+// setupUserUI handles all nav visibility — override merged into original above
 
 // ── Render pending requests in admin panel
 function renderPendingRequests() {
@@ -4118,20 +4131,9 @@ function renderAdminPage() {
 }
 
 // ── Override showPage to handle new pages
-const _origShowPage = showPage;
-function showPage(id) {
-  _origShowPage(id);
-  if (id === 'folders')    { renderFoldersPage(); }
-  if (id === 'admin')      { renderAdminPage(); }
-}
+// showPage handles all pages — override merged into original
 
-// ── Override init to render folders sidebar
-const _origInit = init;
-function init() {
-  _origInit();
-  renderCustomFoldersSidebar();
-  updateAdminNotifBadge();
-}
+// init override merged into original
 
 
 // ══════════════════════════════════════════════════════
